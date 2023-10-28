@@ -29,7 +29,7 @@ char rankToChar(uint8_t rank) {
 }
 
 // infostate_translator() is a function that takes in a MatchState and a Game and returns a string representation of the infostate
-char* infostate_translator(MatchState state, Game game) {
+char* infostate_translator(MatchState *state, Game *game) {
     static char infostate[100]; // Static to ensure memory remains allocated after function returns
 
     // Extract player's hole cards
@@ -94,7 +94,13 @@ json_object* loadJSON(const char* filename) {
     fseek(f, 0, SEEK_SET);
 
     char *string = malloc(fsize + 1);
-    fread(string, 1, fsize, f);
+    size_t bytesRead = fread(string, 1, fsize, f);
+    if (bytesRead != fsize) {
+        fprintf(stderr, "ERROR: could not read the entire file\n");
+        free(string);
+        fclose(f);
+        return NULL;
+    }
     fclose(f);
     string[fsize] = 0;
 
@@ -240,7 +246,7 @@ int main( int argc, char **argv )
 
     char infostate[100];
 
-    infostate = infostate_translator(state, game); //infostate_translator needs to be implemented
+    infostate = infostate_translator(&state, game); //infostate_translator needs to be implemented
 
     sprintf(infostate, "%s", "YOUR_INFOSTATE_REPRESENTATION_HERE");
 
