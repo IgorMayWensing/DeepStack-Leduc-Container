@@ -122,7 +122,7 @@ void getActionsAndProbs(json_object *strategy, const char *infostate, int **acti
 int main( int argc, char **argv )
 {
   int sock, len, r;
-  int32_t min, max;
+  //int32_t min, max;
   uint16_t port;
   Game *game;
   MatchState state;
