@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
     python3 \
     sudo \
     nano \
+    libjson-c-dev \
  && apt-get autoremove -y && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Clone, modify and install Torch
