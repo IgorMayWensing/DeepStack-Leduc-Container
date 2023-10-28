@@ -27,4 +27,4 @@ example_player: game.c game.h evalHandTables rng.c rng.h example_player.c net.c 
 	$(CC) $(CFLAGS) -o $@ game.c rng.c example_player.c net.c
 
 tcc_ai_player: tcc_ai_player.c game.c game.h rng.c rng.h net.c net.h
-	$(CC) $(CFLAGS) -L/usr/lib/x86_64-linux-gnu/ -ljson-c -o $@ tcc_ai_player.c game.c rng.c net.c
+	$(CC) $(CFLAGS) -o $@ tcc_ai_player.c game.c rng.c net.c -L/usr/lib/x86_64-linux-gnu/ -ljson-c
