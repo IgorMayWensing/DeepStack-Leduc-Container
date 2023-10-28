@@ -18,41 +18,41 @@ Copyright (C) 2011 by the Computer Poker Research Group, University of Alberta
 #include "net.h"
 #include <json-c/json.h>
 
-// Function to convert card rank to its character representation
-char rankToChar(uint8_t rank) {
-    switch (rank) {
-        case 0: return 'Q';
-        case 1: return 'K';
-        case 2: return 'A';
-        default: return '?'; // Error case, should not happen
-    }
-}
-
-// infostate_translator() is a function that takes in a MatchState and a Game and returns a string representation of the infostate
+//infostate_translator() is a function that takes in a MatchState and a Game and returns a string representation of the infostate
 char* infostate_translator(MatchState *state, Game *game) {
     static char infostate[100]; // Static to ensure memory remains allocated after function returns
 
+    // Function to convert card rank to its character representation
+    char rankToChar(uint8_t rank) {
+        switch (rank) {
+            case 0: return 'Q';
+            case 1: return 'K';
+            case 2: return 'A';
+            default: return '?'; // Error case, should not happen
+        }
+    }
+
     // Extract player's hole cards
     char holeCards[MAX_HOLE_CARDS + 1];
-    for (int i = 0; i < game.numHoleCards; i++) {
-        holeCards[i] = rankToChar(rankOfCard(state.state.holeCards[state.viewingPlayer][i]));
+    for (int i = 0; i < game->numHoleCards; i++) {
+        holeCards[i] = rankToChar(rankOfCard(state->state.holeCards[state->viewingPlayer][i]));
     }
-    holeCards[game.numHoleCards] = '\0';
+    holeCards[game->numHoleCards] = '\0';
 
     // Extract board cards (if they exist)
     char boardCards[MAX_BOARD_CARDS + 1] = "";
-    if (state.state.round > 0) { // If we're past the pre-flop round
-        for (int i = 0; i < game.numBoardCards[0]; i++) { // Assuming flop is the first set of board cards
-            boardCards[i] = rankToChar(rankOfCard(state.state.boardCards[i]));
+    if (state->state.round > 0) { // If we're past the pre-flop round
+        for (int i = 0; i < game->numBoardCards[0]; i++) { // Assuming flop is the first set of board cards
+            boardCards[i] = rankToChar(rankOfCard(state->state.boardCards[i]));
         }
-        boardCards[game.numBoardCards[0]] = '\0';
+        boardCards[game->numBoardCards[0]] = '\0';
     }
 
     // Extract action history
     char actionHistory[MAX_NUM_ACTIONS + 1];
     int actionCount = 0;
-    for (int i = 0; i < state.state.numActions[0]; i++) { // For pre-flop actions
-        Action act = state.state.action[0][i];
+    for (int i = 0; i < state->state.numActions[0]; i++) { // For pre-flop actions
+        Action act = state->state.action[0][i];
         if (act.type == a_fold || act.type == a_call) {
             actionHistory[actionCount++] = 'p';
         } else if (act.type == a_raise) {
@@ -65,8 +65,8 @@ char* infostate_translator(MatchState *state, Game *game) {
     }
     actionHistory[actionCount++] = '/';
 
-    for (int i = 0; i < state.state.numActions[1]; i++) { // For flop actions
-        Action act = state.state.action[1][i];
+    for (int i = 0; i < state->state.numActions[1]; i++) { // For flop actions
+        Action act = state->state.action[1][i];
         if (act.type == a_fold || act.type == a_call) {
             actionHistory[actionCount++] = 'p';
         } else if (act.type == a_raise) {
@@ -84,23 +84,12 @@ char* infostate_translator(MatchState *state, Game *game) {
 
 json_object* loadJSON(const char* filename) {
     FILE *f = fopen(filename, "r");
-    if (!f) {
-        perror("Failed to open the file");
-        exit(EXIT_FAILURE);
-    }
-
     fseek(f, 0, SEEK_END);
     long fsize = ftell(f);
     fseek(f, 0, SEEK_SET);
 
     char *string = malloc(fsize + 1);
-    size_t bytesRead = fread(string, 1, fsize, f);
-    if (bytesRead != fsize) {
-        fprintf(stderr, "ERROR: could not read the entire file\n");
-        free(string);
-        fclose(f);
-        return NULL;
-    }
+    fread(string, 1, fsize, f);
     fclose(f);
     string[fsize] = 0;
 
@@ -132,17 +121,15 @@ void getActionsAndProbs(json_object *strategy, const char *infostate, int **acti
 
 int main( int argc, char **argv )
 {
-  int sock, len, r, a;
+  int sock, len, r;
   int32_t min, max;
   uint16_t port;
-  double p;
   Game *game;
   MatchState state;
   Action action;
   FILE *file, *toServer, *fromServer;
   struct timeval tv;
   double probs[ NUM_ACTION_TYPES ];
-  double actionProbs[ NUM_ACTION_TYPES ];
   rng_state_t rng;
   char line[ MAX_LINE_LEN ];
 
@@ -246,9 +233,7 @@ int main( int argc, char **argv )
 
     char infostate[100];
 
-    infostate = infostate_translator(&state, game); //infostate_translator needs to be implemented
-
-    sprintf(infostate, "%s", "YOUR_INFOSTATE_REPRESENTATION_HERE");
+    strcpy(infostate, infostate_translator(&state, game));
 
     int *possible_actions;
     double *action_probs;
