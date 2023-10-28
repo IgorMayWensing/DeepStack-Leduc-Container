@@ -5,6 +5,14 @@ local arguments = require 'Settings.arguments'
 require "ACPC.acpc_game"
 require "Player.continual_resolving"
 
+-- Check if the port has been provided in the command line
+if arg[1] then
+    -- Convert the port argument to a number and assign it to arguments.acpc_server_port
+    arguments.acpc_server_port = tonumber(arg[1])
+else
+    print("No port provided. Using default port: ", arguments.acpc_server_port)
+end
+
 --1.0 create the ACPC game and connect to the server
 local acpc_game = ACPCGame()
 acpc_game:connect(arguments.acpc_server, arguments.acpc_server_port)

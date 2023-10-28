@@ -192,6 +192,30 @@ int main( int argc, char **argv )
     line[ len ] = '\n';
     ++len;
 
+    printf("State:\n");
+    printf("  view: %d\n", state.viewingPlayer);
+    printf("  pot: %d\n", state.state.spent[state.viewingPlayer]);
+    printf("  street: %d\n", state.state.round);
+    printf("  my hand: %d\n", state.state.holeCards[state.viewingPlayer][0]);
+    printf("  board: %d\n", state.state.boardCards[0]);
+    printf("  legal actions: ");
+    if (isValidAction(game, &state.state, 0, &action)) {
+      printf("fold ");
+    }
+    printf("call ");
+    if (raiseIsValid(game, &state.state, &min, &max)) {
+      printf("raise ");
+    }
+    printf("\n");
+    printf("  chosen action: ");
+    if (a == a_fold) {
+      printf("fold\n");
+    } else if (a == a_call) {
+      printf("call\n");
+    } else {
+      printf("raise %d\n", action.size);
+    }
+
     if( fwrite( line, 1, len, toServer ) != len ) {
 
       fprintf( stderr, "ERROR: could not get send response to server\n" );
