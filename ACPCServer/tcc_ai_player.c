@@ -92,7 +92,7 @@ char* infostate_translator(MatchState *state, Game *game) {
     // Combine all parts to form the infostate string
     sprintf(infostate, "%s%s%s", holeCards, boardCards, actionHistory);
     printf("Resulting info\n");
-    printf("Infostate %d\n", infostate);
+    printf("Infostate: %s\n", infostate);
     printf("Hole cards: %s\n", holeCards);
     printf("Board cards: %s\n", boardCards);
     printf("Action history: %s\n", actionHistory);
