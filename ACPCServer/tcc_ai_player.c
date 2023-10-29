@@ -33,13 +33,19 @@ char* infostate_translator(MatchState *state, Game *game) {
     static char infostate[100]; // Static to ensure memory remains allocated after function returns
 
     // Extract player's hole cards
+    printf("Extract player's hole cards\n")
     char holeCards[MAX_HOLE_CARDS + 1];
     for (int i = 0; i < game->numHoleCards; i++) {
         holeCards[i] = rankToChar(rankOfCard(state->state.holeCards[state->viewingPlayer][i]));
     }
     holeCards[game->numHoleCards] = '\0';
 
+    printf("state->state.holeCards[state->viewingPlayer][i] : %d\n", state->state.holeCards[state->viewingPlayer][i]);
+    printf("rankOfCard(state->state.holeCards[state->viewingPlayer][i]) : %d\n", rankOfCard(state->state.holeCards[state->viewingPlayer][i]));
+    printf("rankToChar(rankOfCard(state->state.holeCards[state->viewingPlayer][i])) : %c\n", rankToChar(rankOfCard(state->state.holeCards[state->viewingPlayer][i])));
+
     // Extract board cards (if they exist)
+    printf("Extract board cards (if they exist)\n");
     char boardCards[MAX_BOARD_CARDS + 1] = "";
     if (state->state.round > 0) { // If we're past the pre-flop round
         for (int i = 0; i < game->numBoardCards[0]; i++) { // Assuming flop is the first set of board cards
@@ -48,7 +54,12 @@ char* infostate_translator(MatchState *state, Game *game) {
         boardCards[game->numBoardCards[0]] = '\0';
     }
 
+    printf("state->state.boardCards[i] : %d\n", state->state.boardCards[i]);
+    printf("rankOfCard(state->state.boardCards[i]) : %d\n", rankOfCard(state->state.boardCards[i]));
+    printf("rankToChar(rankOfCard(state->state.boardCards[i])) : %c\n", rankToChar(rankOfCard(state->state.boardCards[i])));
+
     // Extract action history
+    printf("Extract action history\n");
     char actionHistory[MAX_NUM_ACTIONS + 1];
     int actionCount = 0;
     for (int i = 0; i < state->state.numActions[0]; i++) { // For pre-flop actions
@@ -78,6 +89,7 @@ char* infostate_translator(MatchState *state, Game *game) {
 
     // Combine all parts to form the infostate string
     sprintf(infostate, "%s%s%s", holeCards, boardCards, actionHistory);
+    printf("Resulting info\n");
     printf("Infostate %d\n", infostate);
     printf("Hole cards: %s\n", holeCards);
     printf("Board cards: %s\n", boardCards);
