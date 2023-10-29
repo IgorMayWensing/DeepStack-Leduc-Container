@@ -151,7 +151,6 @@ int main( int argc, char **argv )
   Action action;
   FILE *file, *toServer, *fromServer;
   struct timeval tv;
-  double probs[ NUM_ACTION_TYPES ];
   rng_state_t rng;
   char line[ MAX_LINE_LEN ];
 
@@ -169,11 +168,6 @@ int main( int argc, char **argv )
     fprintf(stderr, "ERROR: could not load JSON file\n");
     exit(EXIT_FAILURE);
   }
-
-  /* Define the probabilities of actions for the player */
-  probs[ a_fold ] = 0.06;
-  probs[ a_call ] = ( 1.0 - probs[ a_fold ] ) * 0.5;
-  probs[ a_raise ] = ( 1.0 - probs[ a_fold ] ) * 0.5;
 
   /* Initialize the player's random number state using time */
   gettimeofday( &tv, NULL );
