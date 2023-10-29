@@ -18,19 +18,19 @@ Copyright (C) 2011 by the Computer Poker Research Group, University of Alberta
 #include "net.h"
 #include <json-c/json.h>
 
+  // Function to convert card rank to its character representation
+  char rankToChar(uint8_t rank) {
+      switch (rank) {
+          case 0: return 'Q';
+          case 1: return 'K';
+          case 2: return 'A';
+          default: return '?'; // Error case, should not happen
+      }
+  }
+
 //infostate_translator() is a function that takes in a MatchState and a Game and returns a string representation of the infostate
 char* infostate_translator(MatchState *state, Game *game) {
     static char infostate[100]; // Static to ensure memory remains allocated after function returns
-
-    // Function to convert card rank to its character representation
-    char rankToChar(uint8_t rank) {
-        switch (rank) {
-            case 0: return 'Q';
-            case 1: return 'K';
-            case 2: return 'A';
-            default: return '?'; // Error case, should not happen
-        }
-    }
 
     // Extract player's hole cards
     char holeCards[MAX_HOLE_CARDS + 1];
@@ -78,7 +78,10 @@ char* infostate_translator(MatchState *state, Game *game) {
 
     // Combine all parts to form the infostate string
     sprintf(infostate, "%s%s%s", holeCards, boardCards, actionHistory);
-
+    printf("Infostate %d\n", infostate);
+    printf("Hole cards: %s\n", holeCards);
+    printf("Board cards: %s\n", boardCards);
+    printf("Action history: %s\n", actionHistory);
     return infostate;
 }
 
