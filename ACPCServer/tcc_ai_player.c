@@ -33,7 +33,7 @@ char* infostate_translator(MatchState *state, Game *game) {
     static char infostate[100]; // Static to ensure memory remains allocated after function returns
 
     // Extract player's hole cards
-    printf("Extract player's hole cards\n")
+    printf("Extract player's hole cards\n");
     char holeCards[MAX_HOLE_CARDS + 1];
     for (int i = 0; i < game->numHoleCards; i++) {
         holeCards[i] = rankToChar(rankOfCard(state->state.holeCards[state->viewingPlayer][i]));
