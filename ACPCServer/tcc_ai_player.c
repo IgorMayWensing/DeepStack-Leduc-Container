@@ -31,13 +31,13 @@ char* infostate_translator(const Game *game, const State *state) {
     printf("\n0 holeCards[][]: %u\n", state->holeCards[0][0]); //type is uint8_t
     printf("rank of 0 holeCards[][]: %u\n", rankOfCard(state->holeCards[0][0])); //type is uint8_t
     printf("suit of 0 holeCards[][]: %u\n", suitOfCard(state->holeCards[0][0])); //type is uint8_t
-    printf("makeCard(rank0, suit0): %u\n", makeCard(rankOfCard(state->holeCards[0][0], suitOfCard(state->holeCards[0][0])); //type is uint8_t
+    printf("makeCard(rank0, suit0): %u\n", makeCard(rankOfCard(state->holeCards[0][0]), suitOfCard(state->holeCards[0][0]))); //type is uint8_t
 
 
     printf("\n1 holeCards[][]: %u\n", state->holeCards[1][0]); //type is uint8_t
     printf("rank of 1 holeCards[][]: %u\n", rankOfCard(state->holeCards[1][0])); //type is uint8_t
     printf("suit of 1 holeCards[][]: %u\n", suitOfCard(state->holeCards[1][0])); //type is uint8_t
-    printf("makeCard(rank1, suit1): %u\n", makeCard(rankOfCard(state->holeCards[1][0], suitOfCard(state->holeCards[1][0])); //type is uint8_t
+    printf("makeCard(rank1, suit1): %u\n", makeCard(rankOfCard(state->holeCards[1][0]), suitOfCard(state->holeCards[1][0]))); //type is uint8_t
 
     printf("boardCards[][]: %u\n\n", state->boardCards[0]); //type is uint8_t
     
