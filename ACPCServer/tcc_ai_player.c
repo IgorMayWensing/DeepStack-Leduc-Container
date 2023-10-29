@@ -31,24 +31,24 @@ char* infostate_translator(const Game *game, const State *state) {
     char* mycard = "";
     if (rankOfCard(state->holeCards[0][0]) == 10) {
       mycard = "Q";
-    } elseif (rankOfCard(state->holeCards[0][0]) == 11) {
+    } else if (rankOfCard(state->holeCards[0][0]) == 11) {
       mycard = "K";
-    } elseif (rankOfCard(state->holeCards[0][0]) == 12) {
+    } else if (rankOfCard(state->holeCards[0][0]) == 12) {
       mycard = "A";
     } else {
-      printf("Card doesnt exist\n")
+      printf("Card doesnt exist\n");
     }
 
 
     char* boardcard = "";
     if (rankOfCard(state->boardCards[0]) == 10) {
       boardcard = "Q";
-    } elseif (rankOfCard(state->boardCards[0]) == 11) {
+    } else if (rankOfCard(state->boardCards[0]) == 11) {
       boardcard = "K";
-    } elseif (rankOfCard(state->boardCards[0]) == 12) {
+    } else if (rankOfCard(state->boardCards[0]) == 12) {
       boardcard = "A";
     } else {
-      printf("No card in board yet\n")
+      printf("No card in board yet\n");
     }
 
     //do this somehow
