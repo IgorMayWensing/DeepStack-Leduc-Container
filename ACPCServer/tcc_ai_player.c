@@ -18,7 +18,7 @@ Copyright (C) 2011 by the Computer Poker Research Group, University of Alberta
 #include "net.h"
 #include <json-c/json.h>
 
-char* infostate_translator(Game *game, State *state) {
+char* infostate_translator(Game *game, MatchState *state) {
     // Sample print statements about the game and state objects
     printf("Number of players in the game: %d\n", game->numPlayers);
     printf("Number of rounds in the game: %d\n", game->numRounds);
@@ -41,7 +41,11 @@ json_object* loadJSON(const char* filename) {
     fseek(f, 0, SEEK_SET);
 
     char *string = malloc(fsize + 1);
-    fread(string, 1, fsize, f);
+    size_t readBytes = fread(string, 1, fsize, f);
+    if(readBytes != fsize) {
+        printf("ERROR: could not read json\n");
+    }
+
     fclose(f);
     string[fsize] = 0;
 
@@ -241,7 +245,6 @@ int main( int argc, char **argv )
       exit( EXIT_FAILURE );
     }
     fflush( toServer );
-    free(infoset);
   }
 
   json_object_put(strategy);
