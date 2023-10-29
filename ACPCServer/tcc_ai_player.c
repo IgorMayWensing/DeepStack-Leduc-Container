@@ -117,6 +117,11 @@ void getActionsAndProbs(json_object *strategy, const char *infostate, int **acti
         *actions = NULL;
         *probs = NULL;
     }
+    // Inside getActionsAndProbs function, after extracting actions and probabilities
+    printf("Number of possible actions: %d\n", *num_actions);
+    for (int i = 0; i < *num_actions; i++) {
+        printf("Action %d: %d, Probability: %f\n", i, (*actions)[i], (*probs)[i]);
+    }
 }
 
 int main( int argc, char **argv )
@@ -235,6 +240,9 @@ int main( int argc, char **argv )
 
     strcpy(infostate, infostate_translator(&state, game));
 
+    // After infostate is formed
+    printf("Infostate: %s\n", infostate);
+
     int *possible_actions;
     double *action_probs;
     int num_possible_actions;
@@ -261,6 +269,12 @@ int main( int argc, char **argv )
         // Handle the case where the infostate is not found in the strategy
         action.type = a_fold;  // Default to fold
         action.size = 0;
+    }
+
+    // Inside main function, after choosing an action
+    printf("Chosen action type: %d\n", action.type);
+    if (action.type == a_raise) {
+        printf("Chosen action size: %d\n", action.size);
     }
 
     /* do the action! */
