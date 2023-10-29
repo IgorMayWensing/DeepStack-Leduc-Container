@@ -21,10 +21,14 @@ Copyright (C) 2011 by the Computer Poker Research Group, University of Alberta
 char* infostate_translator(const Game *game, const State *state) {
     // Accessing members of the 'State' structure within 'MatchState'
     printf("Number of players in the game: %d\n", game->numPlayers);
-    printf("Number of rounds in the game: %d\n", game->numRounds);
+    printf("Number of rounds in the game: %d\n\n", game->numRounds);
     
     printf("Current round: %d\n", state->round);
     printf("Hand ID: %u\n", state->handId);
+    printf("maxSpent: %u\n", state->maxSpent);
+    printf("minNoLimitRaiseTo: %u\n", state->minNoLimitRaiseTo);
+    printf("holeCards[][]: %u\n", state->holeCards[0][0]); //type is uint8_t
+    printf("boardCards[][]: %u\n\n", state->boardCards[0]); //type is uint8_t
     
     // You can add more prints to detail out game and state
 
