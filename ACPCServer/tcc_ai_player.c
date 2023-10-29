@@ -210,7 +210,7 @@ int main( int argc, char **argv )
     double *action_probs;
     int num_possible_actions;
 
-    getActionsAndProbs(strategy, infostate, &possible_actions, &action_probs, &num_possible_actions);
+    //getActionsAndProbs(strategy, infostate, &possible_actions, &action_probs, &num_possible_actions);
 
     if (num_possible_actions > 0) {
         double p = genrand_real2(&rng);
