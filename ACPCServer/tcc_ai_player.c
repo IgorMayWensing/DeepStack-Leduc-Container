@@ -18,13 +18,13 @@ Copyright (C) 2011 by the Computer Poker Research Group, University of Alberta
 #include "net.h"
 #include <json-c/json.h>
 
-char* infostate_translator(Game *game, MatchState *matchState) {
+char* infostate_translator(const Game *game, const State *state) {
     // Accessing members of the 'State' structure within 'MatchState'
     printf("Number of players in the game: %d\n", game->numPlayers);
     printf("Number of rounds in the game: %d\n", game->numRounds);
     
-    printf("Current round: %d\n", matchState->state.round);
-    printf("Hand ID: %u\n", matchState->state.handId);
+    printf("Current round: %d\n", state->round);
+    printf("Hand ID: %u\n", state->handId);
     
     // You can add more prints to detail out game and state
 
@@ -186,7 +186,7 @@ int main( int argc, char **argv )
     line[ len ] = ':';
     ++len;
 
-    char *infoset = infostate_translator(game, &state);
+    char *infoset = infostate_translator(game, &state->state);
     printf("Returned InfoSet: %s\n", infoset);
 
     int *possible_actions;
