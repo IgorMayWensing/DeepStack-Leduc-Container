@@ -192,13 +192,12 @@ int main( int argc, char **argv )
     line[ len ] = '\n';
     ++len;
 
-    printf("Game: %s\n", game->name);
     printf("State:\n");
     printf("  view: %d\n", state.viewingPlayer);
     printf("  pot: %d\n", state.state.spent[state.viewingPlayer]);
     printf("  street: %d\n", state.state.round);
-    printf("  my hand: %d %d\n", state.state.holeCards[state.viewingPlayer][0], state.state.holeCards[state.viewingPlayer][1]);
-    printf("  board: %d %d %d\n", state.state.boardCards[0], state.state.boardCards[1], state.state.boardCards[2]);
+    printf("  my hand: %d %d\n", state.state.holeCards[state.viewingPlayer][0]);
+    printf("  board: %d %d %d\n", state.state.boardCards[0]);
     printf("  legal actions: ");
     if (isValidAction(game, &state.state, 0, &action)) {
       printf("fold ");

@@ -32,70 +32,52 @@ Copyright (C) 2011 by the Computer Poker Research Group, University of Alberta
 char* infostate_translator(MatchState *state, Game *game) {
     static char infostate[100]; // Static to ensure memory remains allocated after function returns
 
-    // Extract player's hole cards
-    printf("Extract player's hole cards\n");
-    char holeCards[MAX_HOLE_CARDS + 1];
+    // Get and print my current card
+
+    // Get and print board cards, if they exist
+
+    // Get and print action history
+
+    // Get and print pot size
+
+    // Get and print my stack size
+    
+    int pos = 0; // Position in the infostate string
+
+    // Get and print my current card
     for (int i = 0; i < game->numHoleCards; i++) {
-        holeCards[i] = rankToChar(rankOfCard(state->state.holeCards[state->viewingPlayer][i]));
-        printf("state->state.holeCards[state->viewingPlayer][i] : %d\n", state->state.holeCards[state->viewingPlayer][i]);
-        printf("rankOfCard(state->state.holeCards[state->viewingPlayer][i]) : %d\n", rankOfCard(state->state.holeCards[state->viewingPlayer][i]));
-        printf("rankToChar(rankOfCard(state->state.holeCards[state->viewingPlayer][i])) : %c\n", rankToChar(rankOfCard(state->state.holeCards[state->viewingPlayer][i])));
+        infostate[pos++] = rankToChar(rankOfCard(state->state.holeCards[state->viewingPlayer][i]));
     }
-    holeCards[game->numHoleCards] = '\0';
+    infostate[pos++] = '/';
 
-
-
-    // Extract board cards (if they exist)
-    printf("Extract board cards (if they exist)\n");
-    char boardCards[MAX_BOARD_CARDS + 1] = "";
-    if (state->state.round > 0) { // If we're past the pre-flop round
-        for (int i = 0; i < game->numBoardCards[0]; i++) { // Assuming flop is the first set of board cards
-            boardCards[i] = rankToChar(rankOfCard(state->state.boardCards[i]));
-            printf("state->state.boardCards[i] : %d\n", state->state.boardCards[i]);
-            printf("rankOfCard(state->state.boardCards[i]) : %d\n", rankOfCard(state->state.boardCards[i]));
-            printf("rankToChar(rankOfCard(state->state.boardCards[i])) : %c\n", rankToChar(rankOfCard(state->state.boardCards[i])));
+    // Get and print board cards, if they exist
+    for (int round = 0; round <= state->state.round; round++) {
+        for (int i = 0; i < game->numBoardCards[round]; i++) {
+            infostate[pos++] = rankToChar(rankOfCard(state->state.boardCards[game->numBoardCards[round] * round + i]));
         }
-        boardCards[game->numBoardCards[0]] = '\0';
-    }
-
-
-
-    // Extract action history
-    printf("Extract action history\n");
-    char actionHistory[MAX_NUM_ACTIONS + 1];
-    int actionCount = 0;
-    for (int i = 0; i < state->state.numActions[0]; i++) { // For pre-flop actions
-        Action act = state->state.action[0][i];
-        if (act.type == a_fold || act.type == a_call) {
-            actionHistory[actionCount++] = 'p';
-        } else if (act.type == a_raise) {
-            int raiseAmount = act.size / 100; // Assuming raise sizes are in multiples of 100
-            actionHistory[actionCount++] = (raiseAmount <= 9) ? '1' + raiseAmount - 1 : 'a' + raiseAmount - 10;
+        if (round < state->state.round) {
+            infostate[pos++] = '/';
         }
     }
-    if (actionCount % 2 == 1) {
-        actionHistory[actionCount++] = 'p';
-    }
-    actionHistory[actionCount++] = '/';
 
-    for (int i = 0; i < state->state.numActions[1]; i++) { // For flop actions
-        Action act = state->state.action[1][i];
-        if (act.type == a_fold || act.type == a_call) {
-            actionHistory[actionCount++] = 'p';
-        } else if (act.type == a_raise) {
-            int raiseAmount = act.size / 100;
-            actionHistory[actionCount++] = (raiseAmount <= 9) ? '1' + raiseAmount - 1 : 'a' + raiseAmount - 10;
+    // Get and print action history
+    for (int round = 0; round <= state->state.round; round++) {
+        infostate[pos++] = ':';
+        for (int i = 0; i < state->state.numActions[round]; i++) {
+            switch (state->state.action[round][i].type) {
+                case a_fold: infostate[pos++] = 'f'; break;
+                case a_call: infostate[pos++] = 'c'; break;
+                case a_raise: 
+                    infostate[pos++] = 'r';
+                    pos += snprintf(&infostate[pos], sizeof(infostate) - pos, "%d", state->state.action[round][i].size);
+                    break;
+                default: break;
+            }
         }
     }
-    actionHistory[actionCount] = '\0';
 
-    // Combine all parts to form the infostate string
-    sprintf(infostate, "%s%s%s", holeCards, boardCards, actionHistory);
-    printf("Resulting info\n");
-    printf("Infostate: %s\n", infostate);
-    printf("Hole cards: %s\n", holeCards);
-    printf("Board cards: %s\n", boardCards);
-    printf("Action history: %s\n", actionHistory);
+    infostate[pos] = '\0'; // Null-terminate the string
+
     return infostate;
 }
 
