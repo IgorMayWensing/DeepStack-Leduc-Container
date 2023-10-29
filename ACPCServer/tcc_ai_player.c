@@ -20,7 +20,7 @@ Copyright (C) 2011 by the Computer Poker Research Group, University of Alberta
 
 char* infostate_translator(const Game *game, const State *state) {
     // Accessing members of the 'State' structure within 'MatchState'
-    printf("Number of players in the game: %d\n", game->numPlayers);
+    printf("\nNumber of players in the game: %d\n", game->numPlayers);
     printf("Number of rounds in the game: %d\n\n", game->numRounds);
     
     printf("Current round: %d\n", state->round);
@@ -28,24 +28,51 @@ char* infostate_translator(const Game *game, const State *state) {
     printf("maxSpent: %u\n", state->maxSpent);
     printf("minNoLimitRaiseTo: %u\n", state->minNoLimitRaiseTo);
 
-    printf("\n0 holeCards[][]: %u\n", state->holeCards[0][0]); //type is uint8_t
-    printf("rank of 0 holeCards[][]: %u\n", rankOfCard(state->holeCards[0][0])); //type is uint8_t
-    printf("suit of 0 holeCards[][]: %u\n", suitOfCard(state->holeCards[0][0])); //type is uint8_t
-    printf("makeCard(rank0, suit0): %u\n", makeCard(rankOfCard(state->holeCards[0][0]), suitOfCard(state->holeCards[0][0]))); //type is uint8_t
+    char* mycard = "";
+    if (rankOfCard(state->holeCards[0][0]) == 10) {
+      mycard = "Q";
+    } elseif (rankOfCard(state->holeCards[0][0]) == 11) {
+      mycard = "K";
+    } elseif (rankOfCard(state->holeCards[0][0]) == 12) {
+      mycard = "A";
+    } else {
+      printf("Card doesnt exist\n")
+    }
 
 
-    printf("\n1 holeCards[][]: %u\n", state->holeCards[1][0]); //type is uint8_t
-    printf("rank of 1 holeCards[][]: %u\n", rankOfCard(state->holeCards[1][0])); //type is uint8_t
-    printf("suit of 1 holeCards[][]: %u\n", suitOfCard(state->holeCards[1][0])); //type is uint8_t
-    printf("makeCard(rank1, suit1): %u\n", makeCard(rankOfCard(state->holeCards[1][0]), suitOfCard(state->holeCards[1][0]))); //type is uint8_t
+    char* boardcard = "";
+    if (rankOfCard(state->boardCards[0]) == 10) {
+      boardcard = "Q";
+    } elseif (rankOfCard(state->boardCards[0]) == 11) {
+      boardcard = "K";
+    } elseif (rankOfCard(state->boardCards[0]) == 12) {
+      boardcard = "A";
+    } else {
+      printf("No card in board yet\n")
+    }
 
-    printf("boardCards[][]: %u\n\n", state->boardCards[0]); //type is uint8_t
-    
-    // You can add more prints to detail out game and state
+    //do this somehow
+    char* actionhistory = "";
+    // for () {
+    //   state->action[ state->round ][ i ];
+    // }    
 
-    // For the sake of this example, let's return a static string
-    static char infostate[] = "Sample InfoState String";
-    return infostate;
+    // Allocate memory for the infoset string. The size is the sum of the lengths of the other strings + 1 for the null terminator.
+    char* infoset = malloc(strlen(mycard) + strlen(boardcard) + strlen(actionhistory) + 1);
+
+    // Check if the memory was successfully allocated
+    if (infoset != NULL) {
+        strcpy(infoset, mycard); // Copy mycard into infoset
+        strcat(infoset, boardcard); // Concatenate boardcard onto the end of infoset
+        strcat(infoset, actionhistory); // Concatenate actionhistory onto the end of infoset
+    }
+
+    printf("\nmycard: %s\n", mycard);
+    printf("boardcard: %s\n", boardcard);
+    printf("actionhistory: %s\n", actionhistory);
+    printf("InfoSet: %s\n", infoset);
+
+    return infoset; // Now infoset should be "AKpp"
 }
 
 json_object* loadJSON(const char* filename) {
@@ -258,6 +285,7 @@ int main( int argc, char **argv )
       fprintf( stderr, "ERROR: could not get send response to server\n" );
       exit( EXIT_FAILURE );
     }
+    free(infoset); // Free the memory after using infoset
     fflush( toServer );
   }
 
