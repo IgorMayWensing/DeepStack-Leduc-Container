@@ -37,12 +37,13 @@ char* infostate_translator(MatchState *state, Game *game) {
     char holeCards[MAX_HOLE_CARDS + 1];
     for (int i = 0; i < game->numHoleCards; i++) {
         holeCards[i] = rankToChar(rankOfCard(state->state.holeCards[state->viewingPlayer][i]));
+        printf("state->state.holeCards[state->viewingPlayer][i] : %d\n", state->state.holeCards[state->viewingPlayer][i]);
+        printf("rankOfCard(state->state.holeCards[state->viewingPlayer][i]) : %d\n", rankOfCard(state->state.holeCards[state->viewingPlayer][i]));
+        printf("rankToChar(rankOfCard(state->state.holeCards[state->viewingPlayer][i])) : %c\n", rankToChar(rankOfCard(state->state.holeCards[state->viewingPlayer][i])));
     }
     holeCards[game->numHoleCards] = '\0';
 
-    printf("state->state.holeCards[state->viewingPlayer][i] : %d\n", state->state.holeCards[state->viewingPlayer][i]);
-    printf("rankOfCard(state->state.holeCards[state->viewingPlayer][i]) : %d\n", rankOfCard(state->state.holeCards[state->viewingPlayer][i]));
-    printf("rankToChar(rankOfCard(state->state.holeCards[state->viewingPlayer][i])) : %c\n", rankToChar(rankOfCard(state->state.holeCards[state->viewingPlayer][i])));
+
 
     // Extract board cards (if they exist)
     printf("Extract board cards (if they exist)\n");
@@ -50,13 +51,14 @@ char* infostate_translator(MatchState *state, Game *game) {
     if (state->state.round > 0) { // If we're past the pre-flop round
         for (int i = 0; i < game->numBoardCards[0]; i++) { // Assuming flop is the first set of board cards
             boardCards[i] = rankToChar(rankOfCard(state->state.boardCards[i]));
+            printf("state->state.boardCards[i] : %d\n", state->state.boardCards[i]);
+            printf("rankOfCard(state->state.boardCards[i]) : %d\n", rankOfCard(state->state.boardCards[i]));
+            printf("rankToChar(rankOfCard(state->state.boardCards[i])) : %c\n", rankToChar(rankOfCard(state->state.boardCards[i])));
         }
         boardCards[game->numBoardCards[0]] = '\0';
     }
 
-    printf("state->state.boardCards[i] : %d\n", state->state.boardCards[i]);
-    printf("rankOfCard(state->state.boardCards[i]) : %d\n", rankOfCard(state->state.boardCards[i]));
-    printf("rankToChar(rankOfCard(state->state.boardCards[i])) : %c\n", rankToChar(rankOfCard(state->state.boardCards[i])));
+
 
     // Extract action history
     printf("Extract action history\n");
