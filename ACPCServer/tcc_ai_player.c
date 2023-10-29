@@ -28,6 +28,7 @@ char* infostate_translator(const Game *game, const State *state) {
     printf("maxSpent: %u\n", state->maxSpent);
     printf("minNoLimitRaiseTo: %u\n", state->minNoLimitRaiseTo);
     printf("holeCards[][]: %u\n", state->holeCards[0][0]); //type is uint8_t
+    printf("my card: %c\n", card_to_string([state->holeCards[0][0]]));
     printf("boardCards[][]: %u\n\n", state->boardCards[0]); //type is uint8_t
     
     // You can add more prints to detail out game and state
