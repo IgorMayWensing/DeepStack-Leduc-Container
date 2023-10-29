@@ -18,57 +18,40 @@ Copyright (C) 2011 by the Computer Poker Research Group, University of Alberta
 #include "net.h"
 #include <json-c/json.h>
 
-  // Function to convert card rank to its character representation
-  char rankToChar(uint8_t rank) {
-      switch (rank) {
-          case 0: return 'Q';
-          case 1: return 'K';
-          case 2: return 'A';
-          default: return '?'; // Error case, should not happen
-      }
-  }
-
-char* infostate_translator(MatchState *state, Game *game) {
-  static char infostate[100]; // Static to ensure memory remains allocated after function returns
-
-  // Get and print my current card
-  uint8_t my_card = state->cards[state->viewingPlayer][0];
-  char my_card_char = rankToChar(rankOfCard(my_card));
-  printf("My card: %c\n", my_card_char);
-
-  // Get and print board cards, if they exist
-  if (state->round != 0) {
-    printf("Board cards: ");
-    for (int i = 0; i < state->round; i++) {
-      uint8_t board_card = state->cards[2][i];
-      char board_card_char = rankToChar(rankOfCard(board_card));
-      printf("%c ", board_card_char);
+char* infostate_translator(Game *game, State *state) {
+    // allocate enough memory to hold the potential information (you may adjust this value)
+    char *infostate = malloc(1000 * sizeof(char));
+    if (infostate == NULL) {
+        exit(1); // memory allocation failed
     }
-    printf("\n");
-  }
 
-  // Get and print action history
-  printf("Action history: ");
-  for (int i = 0; i < state->numActions; i++) {
-    Action action = state->action[i];
-    if (action.type == a_raise) {
-      printf("R%d ", action.size);
-    } else if (action.type == a_call) {
-      printf("C ");
-    } else if (action.type == a_fold) {
-      printf("F ");
+    // start constructing the infostate string
+    int offset = 0; // keeps track of our current position in the infostate string
+
+    // print player 1 stack
+    offset += sprintf(infostate + offset, "Player 1 stack: %d\n", game->stack[0]);
+
+    // print player 1 private card
+    for (int i = 0; i < game->numHoleCards; i++) {
+        offset += sprintf(infostate + offset, "Player 1 private card %d: %u\n", i+1, state->holeCards[0][i]);
     }
-  }
-  printf("\n");
 
-  // Get and print pot size
-  printf("Pot size: %d\n", state->pot);
+    // print board cards
+    for (int r = 0; r < game->numRounds; r++) {
+        for (int c = 0; c < game->numBoardCards[r]; c++) {
+            offset += sprintf(infostate + offset, "Round %d board card %d: %u\n", r+1, c+1, state->boardCards[c]);
+        }
+    }
 
-  // Get and print my stack size
-  printf("My stack size: %d\n", state->stack[state->viewingPlayer]);
+    // print action history
+    for (int r = 0; r < game->numRounds; r++) {
+        for (int a = 0; a < state->numActions[r]; a++) {
+            // Note: I'm assuming the Action type is an integer or enum for simplicity. You may need to adjust this.
+            offset += sprintf(infostate + offset, "Round %d action %d by player %u: %u\n", r+1, a+1, state->actingPlayer[r][a], state->action[r][a]);
+        }
+    }
 
-  printf("\n");
-  return infostate;
+    return infostate;
 }
 
 json_object* loadJSON(const char* filename) {
@@ -87,6 +70,7 @@ json_object* loadJSON(const char* filename) {
     return jobj;
 }
 
+// i have no ideia if this is right
 void getActionsAndProbs(json_object *strategy, const char *infostate, int **actions, double **probs, int *num_actions) {
     json_object *entry;
     if (json_object_object_get_ex(strategy, infostate, &entry)) {
@@ -219,12 +203,8 @@ int main( int argc, char **argv )
     line[ len ] = ':';
     ++len;
 
-    char infostate[100];
-
-    strcpy(infostate, infostate_translator(&state, game));
-
-    // After infostate is formed
-    printf("Infostate: %s\n", infostate);
+    char *infoset = infostate_translator(game, &state);
+    printf("%s", infoset); // print the constructed infostate
 
     int *possible_actions;
     double *action_probs;
@@ -281,6 +261,7 @@ int main( int argc, char **argv )
       exit( EXIT_FAILURE );
     }
     fflush( toServer );
+    free(infoset);
   }
 
   json_object_put(strategy);
