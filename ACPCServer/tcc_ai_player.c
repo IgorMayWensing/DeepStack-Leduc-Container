@@ -18,18 +18,17 @@ Copyright (C) 2011 by the Computer Poker Research Group, University of Alberta
 #include "net.h"
 #include <json-c/json.h>
 
-char* infostate_translator(Game *game, MatchState *state) {
-    // Sample print statements about the game and state objects
+char* infostate_translator(Game *game, MatchState *matchState) {
+    // Accessing members of the 'State' structure within 'MatchState'
     printf("Number of players in the game: %d\n", game->numPlayers);
     printf("Number of rounds in the game: %d\n", game->numRounds);
     
-    printf("Current round: %d\n", state->round);
-    printf("Hand ID: %u\n", state->handId);
+    printf("Current round: %d\n", matchState->state.round);
+    printf("Hand ID: %u\n", matchState->state.handId);
     
     // You can add more prints to detail out game and state
 
     // For the sake of this example, let's return a static string
-    // If you want to generate dynamic strings, you'd use functions like sprintf and manage memory
     static char infostate[] = "Sample InfoState String";
     return infostate;
 }
