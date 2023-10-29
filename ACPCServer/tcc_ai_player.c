@@ -19,38 +19,18 @@ Copyright (C) 2011 by the Computer Poker Research Group, University of Alberta
 #include <json-c/json.h>
 
 char* infostate_translator(Game *game, State *state) {
-    // allocate enough memory to hold the potential information (you may adjust this value)
-    char *infostate = malloc(1000 * sizeof(char));
-    if (infostate == NULL) {
-        exit(1); // memory allocation failed
-    }
+    // Sample print statements about the game and state objects
+    printf("Number of players in the game: %d\n", game->numPlayers);
+    printf("Number of rounds in the game: %d\n", game->numRounds);
+    
+    printf("Current round: %d\n", state->round);
+    printf("Hand ID: %u\n", state->handId);
+    
+    // You can add more prints to detail out game and state
 
-    // start constructing the infostate string
-    int offset = 0; // keeps track of our current position in the infostate string
-
-    // print player 1 stack
-    offset += sprintf(infostate + offset, "Player 1 stack: %d\n", game->stack[0]);
-
-    // print player 1 private card
-    for (int i = 0; i < game->numHoleCards; i++) {
-        offset += sprintf(infostate + offset, "Player 1 private card %d: %u\n", i+1, state->holeCards[0][i]);
-    }
-
-    // print board cards
-    for (int r = 0; r < game->numRounds; r++) {
-        for (int c = 0; c < game->numBoardCards[r]; c++) {
-            offset += sprintf(infostate + offset, "Round %d board card %d: %u\n", r+1, c+1, state->boardCards[c]);
-        }
-    }
-
-    // print action history
-    for (int r = 0; r < game->numRounds; r++) {
-        for (int a = 0; a < state->numActions[r]; a++) {
-            // Note: I'm assuming the Action type is an integer or enum for simplicity. You may need to adjust this.
-            offset += sprintf(infostate + offset, "Round %d action %d by player %u: %u\n", r+1, a+1, state->actingPlayer[r][a], state->action[r][a]);
-        }
-    }
-
+    // For the sake of this example, let's return a static string
+    // If you want to generate dynamic strings, you'd use functions like sprintf and manage memory
+    static char infostate[] = "Sample InfoState String";
     return infostate;
 }
 
@@ -204,7 +184,7 @@ int main( int argc, char **argv )
     ++len;
 
     char *infoset = infostate_translator(game, &state);
-    printf("%s", infoset); // print the constructed infostate
+    printf("Returned InfoSet: %s\n", infoset);
 
     int *possible_actions;
     double *action_probs;
