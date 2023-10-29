@@ -28,57 +28,47 @@ Copyright (C) 2011 by the Computer Poker Research Group, University of Alberta
       }
   }
 
-//infostate_translator() is a function that takes in a MatchState and a Game and returns a string representation of the infostate
 char* infostate_translator(MatchState *state, Game *game) {
-    static char infostate[100]; // Static to ensure memory remains allocated after function returns
+  static char infostate[100]; // Static to ensure memory remains allocated after function returns
 
-    // Get and print my current card
+  // Get and print my current card
+  uint8_t my_card = state->cards[state->viewingPlayer][0];
+  char my_card_char = rankToChar(rankOfCard(my_card));
+  printf("My card: %c\n", my_card_char);
 
-    // Get and print board cards, if they exist
-
-    // Get and print action history
-
-    // Get and print pot size
-
-    // Get and print my stack size
-    
-    int pos = 0; // Position in the infostate string
-
-    // Get and print my current card
-    for (int i = 0; i < game->numHoleCards; i++) {
-        infostate[pos++] = rankToChar(rankOfCard(state->state.holeCards[state->viewingPlayer][i]));
+  // Get and print board cards, if they exist
+  if (state->round != 0) {
+    printf("Board cards: ");
+    for (int i = 0; i < state->round; i++) {
+      uint8_t board_card = state->cards[2][i];
+      char board_card_char = rankToChar(rankOfCard(board_card));
+      printf("%c ", board_card_char);
     }
-    infostate[pos++] = '/';
+    printf("\n");
+  }
 
-    // Get and print board cards, if they exist
-    for (int round = 0; round <= state->state.round; round++) {
-        for (int i = 0; i < game->numBoardCards[round]; i++) {
-            infostate[pos++] = rankToChar(rankOfCard(state->state.boardCards[game->numBoardCards[round] * round + i]));
-        }
-        if (round < state->state.round) {
-            infostate[pos++] = '/';
-        }
+  // Get and print action history
+  printf("Action history: ");
+  for (int i = 0; i < state->numActions; i++) {
+    Action action = state->action[i];
+    if (action.type == a_raise) {
+      printf("R%d ", action.size);
+    } else if (action.type == a_call) {
+      printf("C ");
+    } else if (action.type == a_fold) {
+      printf("F ");
     }
+  }
+  printf("\n");
 
-    // Get and print action history
-    for (int round = 0; round <= state->state.round; round++) {
-        infostate[pos++] = ':';
-        for (int i = 0; i < state->state.numActions[round]; i++) {
-            switch (state->state.action[round][i].type) {
-                case a_fold: infostate[pos++] = 'f'; break;
-                case a_call: infostate[pos++] = 'c'; break;
-                case a_raise: 
-                    infostate[pos++] = 'r';
-                    pos += snprintf(&infostate[pos], sizeof(infostate) - pos, "%d", state->state.action[round][i].size);
-                    break;
-                default: break;
-            }
-        }
-    }
+  // Get and print pot size
+  printf("Pot size: %d\n", state->pot);
 
-    infostate[pos] = '\0'; // Null-terminate the string
+  // Get and print my stack size
+  printf("My stack size: %d\n", state->stack[state->viewingPlayer]);
 
-    return infostate;
+  printf("\n");
+  return infostate;
 }
 
 json_object* loadJSON(const char* filename) {
