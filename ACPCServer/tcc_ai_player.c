@@ -186,7 +186,7 @@ int main( int argc, char **argv )
     line[ len ] = ':';
     ++len;
 
-    char *infoset = infostate_translator(game, &state->state);
+    char *infoset = infostate_translator(game, &state.state);
     printf("Returned InfoSet: %s\n", infoset);
 
     int *possible_actions;
