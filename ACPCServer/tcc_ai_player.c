@@ -135,16 +135,26 @@ int main( int argc, char **argv )
         printf("Match state as viewed by player 0: %s\n", matchStateStr);
     }
 
-    // Call a Python script to get an action
-    char* command = "python my_script.py";
-    FILE* pipe = popen(command, "w");
+    // Call Python script with matchStateStr as input
+    char command[MAX_LINE_LEN];
+    snprintf(command, MAX_LINE_LEN, "python matchstate_to_action.py \"%s\"", matchStateStr);
+    FILE* pipe = popen(command, "r");
     if (pipe == NULL) {
-      fprintf(stderr, "ERROR: could not open pipe for command %s\n", command);
+      fprintf(stderr, "ERROR: could not execute Python script\n");
       exit(EXIT_FAILURE);
     }
-    fprintf(pipe, "%s", matchStateStr);
+
+    // Read output from Python script
+    char output[MAX_LINE_LEN];
+    if (fgets(output, MAX_LINE_LEN, pipe) == NULL) {
+      fprintf(stderr, "ERROR: could not read output from Python script\n");
+      exit(EXIT_FAILURE);
+    }
+
+    // Close pipe and print output
     pclose(pipe);
-    
+    printf("Python script output: %s\n", output);
+
     /* do the action! */
     assert( isValidAction( game, &state.state, 0, &action ) );
     r = printAction( game, &action, MAX_LINE_LEN - len - 2,
