@@ -11,11 +11,11 @@ def extract_info(matchstate):
     # Retirando o naipe e pegando a carta do jogador 0
     player_0_cards = parts[3].split('|')[0][0]
     
-    # Retirando o naipe e pegando a carta da mesa (se existir)
-    board_cards = parts[3].split('|')[1].split('/')[0][0] if '|' in parts[3] else ''
+    # Tentando extrair a carta da mesa (se existir)
+    board_cards = parts[3].split('|')[1].split('/')[0][0] if '|' in parts[3] and '/' in parts[3] else ''
     
-    # O histórico de ações está na terceira parte da string
-    action_history = parts[2]
+    # O histórico de ações, se existir, está na terceira parte da string
+    action_history = parts[2] if len(parts) > 2 else ''
     
     # Fazendo as substituições solicitadas
     action_history = action_history.replace('f', 'p').replace('c', 'p')
@@ -26,7 +26,6 @@ def extract_info(matchstate):
         if index == len(action_history) - 1 or not action_history[index+1].isdigit():
             action_history = action_history.replace('r', '', 1)
         else:
-            # Encontrando o valor do raise e arredondando para a centena mais próxima
             start = index + 1
             end = start
             while end < len(action_history) and action_history[end].isdigit():
@@ -40,7 +39,7 @@ def extract_info(matchstate):
             action_history = action_history[:index] + rounded_value_str + action_history[end:]
 
     # Se a quantidade de ações do preflop for ímpar, adicionar a letra "p" no fim do preflop
-    preflop_actions = action_history.split('/')[0]
+    preflop_actions = action_history.split('/')[0] if '/' in action_history else action_history
     if len(preflop_actions) % 2 == 1:
         preflop_actions += "p"
 
