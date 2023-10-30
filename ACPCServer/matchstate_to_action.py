@@ -1,6 +1,16 @@
 import re
 import math
 import sys
+import pickle
+import random
+
+def load_strategy_table():
+    # Load the strategy table from the provided pickle file
+    with open('../blueprints/HvX-mccfr-6cards-11maxbet-EPcfr0-mRW0_0-iter1000.pkl', 'rb') as file:
+        strategy_table = pickle.load(file)
+    return strategy_table
+
+STRATEGY_TABLE = load_strategy_table()
 
 def transform_matchstate(matchstate):
     # Divide o matchstate em suas partes
@@ -95,19 +105,48 @@ def test_infoset_str():
     for test in test_cases:
         print(transform_matchstate(test))
 
-def decide_next_action(match_state):
-    action = "c"
+def action_from_code(action_code, selected_action_index, last_action):
+    """Convert an action code to its string representation."""
+    if last_action.isdigit():
+        dict = {0: 'f',
+               1: 'c'}            
+    else:
+        dict = {0: 'c'} 
+
+    if selected_action_index in dict:
+        action = dict[selected_action_index]
+    else:
+        action = "r" + str(action_code) + "00"
     return action
+
+#r600:|A
+#r600c/:|A/A
+
+def decide_next_action(infoset):
+    # Consult our strategy table
+    action_data = STRATEGY_TABLE.get(infoset)
+    
+    # If we don't have data for this match_state, default to 'c'
+    if action_data is None:
+        return 'c', 0
+    
+    actions, probabilities = action_data
+    selected_action_code = random.choices(actions, weights=probabilities)[0]
+
+    selected_action_index = actions.index(selected_action_code)
+    last_action = infoset.split(":|")[0][-1]
+
+    return action_from_code(selected_action_code, selected_action_index, last_action)
 
 def main():
     # Get the match state from the command-line arguments
     match_state_str = sys.argv[1]
 
     # Parse the match state
-    match_state = transform_matchstate(match_state_str)
+    infoset = transform_matchstate(match_state_str)
 
     # Decide on the next action
-    action = decide_next_action(match_state)
+    action = decide_next_action("r600:|A")
 
     # Print the action to stdout
     print(action)
