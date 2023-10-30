@@ -1,42 +1,93 @@
-# -*- coding: utf-8 -*-
-import sys
-import math
+import re
 
-def extract_info(matchstate):
-    # Extract player's cards
-    parts = matchstate.split(':')
+def transform_matchstate(matchstate):
+    # Split the matchstate into its constituent parts
+    parts = matchstate.split(":")
     
-    if len(parts) < 4 or not parts[3]:
-        return "Invalid matchstate"
-
-    player_0_cards_parts = parts[3].split('|')
-    player_0_cards = player_0_cards_parts[0][0] if player_0_cards_parts and player_0_cards_parts[0] else ""
+    # Check if the matchstate has the required format
+    if len(parts) < 5:
+        return "Invalid matchstate format"
     
-    # Extract the board cards if available
-    board_cards = player_0_cards_parts[1].split('/')[0] if len(player_0_cards_parts) > 1 else ""
+    # Extract holeCards and remove suits
+    holeCards = ''.join([c for c in parts[4].split("|")[1] if c.isalpha() and c.isupper()])
+    
+    split_parts = parts[4].split("|")
+    
+    # Extract boardCards and remove suits
+    boardCards = ''.join([c for c in split_parts[2] if c.isalpha() and c.isupper()]) if len(split_parts) > 2 else ""
+    
+    # Extract action history
+    action_history = parts[3]
+    
+    # Split the action history based on "/" to get actions of each round
+    action_rounds = action_history.split("/")
+    
+    # Helper function to transform raise values and replace 'c' or 'f'
+    def transform_action(action):
+        # Replace "f" with "p"
+        action = action.replace("f", "p")
+        
+        # Use regex to find raise patterns and transform them
+        def replace_raise(match):
+            value = int(match.group(1))
+            rounded_value = (value + 99) // 100
+            hex_value = hex(rounded_value)[2:]
+            return hex_value
 
-    # Extract actions and format them
-    actions = parts[3].split('/')[0].split('|')[1] if '/' in parts[3] and '|' in parts[3] else ""
-    actions = actions.replace('f', 'p').replace('c', 'p')
+        return re.sub(r'r(\d+)', replace_raise, action)
+    
+    # Transform each round of action
+    transformed_actions = [transform_action(a) for a in action_rounds]
+    
+    # Construct the final result
+    result = holeCards + boardCards + "".join(transformed_actions)
+    
+    return result
 
-    # Adjust the raises
-    new_actions = []
-    for action in actions.split('r'):
-        if action:
-            if action.isdigit():
-                rounded_value = math.ceil(int(action)/100.0) * 100  # Round up to nearest hundred
-                new_actions.append('r' + str(rounded_value // 100))
-            else:
-                new_actions.append(action)
-    formatted_actions = ''.join(new_actions)
+# Test
+test_cases = [
+    "MATCHSTATE:1:0::|Ks",
+    "MATCHSTATE:1:0:c:|Ks",
+    "MATCHSTATE:1:0:cc/:|Ks/Qh",
+    "MATCHSTATE:1:0:cc/c:|Ks/Qh",
+    "MATCHSTATE:1:0:cc/cc:Kh|Ks/Qh",
+    "MATCHSTATE:1:1::|Qs",
+    "MATCHSTATE:1:1:r451:|Qs",
+    "MATCHSTATE:1:1:r451c/:|Qs/Kh",
+    "MATCHSTATE:1:1:r451c/c:|Qs/Kh",
+    "MATCHSTATE:1:1:r451c/cc:Ah|Qs/Kh",
+    "MATCHSTATE:1:2::|Kh",
+    "MATCHSTATE:1:2:c:|Kh",
+    "MATCHSTATE:1:2:cr369:|Kh",
+    "MATCHSTATE:1:2:cr369r1200:|Kh",
+    "MATCHSTATE:1:2:cr369r1200c/:As|Kh/Qs",
+    "MATCHSTATE:1:3::|Qs",
+    "MATCHSTATE:1:3:c:|Qs",
+    "MATCHSTATE:1:3:cc/:|Qs/Kh",
+    "MATCHSTATE:1:3:cc/c:|Qs/Kh",
+    "MATCHSTATE:1:3:cc/cc:Qh|Qs/Kh",
+    "MATCHSTATE:1:4::|Qs",
+    "MATCHSTATE:1:4:c:|Qs",
+    "MATCHSTATE:1:4:cr932:|Qs",
+    "MATCHSTATE:1:4:cr932f:|Qs",
+    "MATCHSTATE:1:5::|Ah",
+    "MATCHSTATE:1:5:r578:|Ah",
+    "MATCHSTATE:1:5:r578r1200:|Ah",
+    "MATCHSTATE:1:5:r578r1200c/:Qh|Ah/Kh",
+    "MATCHSTATE:1:6::|Kh",
+    "MATCHSTATE:1:6:r1200:|Kh",
+    "MATCHSTATE:1:6:r1200f:|Kh",
+    "MATCHSTATE:1:7::|Kh",
+    "MATCHSTATE:1:7:r235:|Kh",
+    "MATCHSTATE:1:7:r235c/:|Kh/Qh",
+    "MATCHSTATE:1:7:r235c/c:|Kh/Qh",
+    "MATCHSTATE:1:7:r235c/cc:Qs|Kh/Qh",
+    "MATCHSTATE:1:8::|Kh",
+    "MATCHSTATE:1:8:c:|Kh",
+    "MATCHSTATE:1:8:cr552:|Kh",
+    "MATCHSTATE:1:8:cr552f:|Kh",
+    "MATCHSTATE:1:9::|Ks"
+]
 
-    # Add "p" to preflop actions if odd
-    if formatted_actions.count('p') % 2 == 1:
-        formatted_actions += 'p'
-
-    return player_0_cards + board_cards + formatted_actions
-
-if __name__ == "__main__":
-    input_string = sys.argv[1]
-    result = extract_info(input_string)
-    print(result)
+for test in test_cases:
+    print(transform_matchstate(test))
