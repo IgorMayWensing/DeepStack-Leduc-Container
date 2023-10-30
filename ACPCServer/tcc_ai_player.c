@@ -39,12 +39,6 @@ int main( int argc, char **argv )
     exit( EXIT_FAILURE );
   }
 
-  json_object *strategy = loadJSON("../blueprints/hjO-mccfr-6cards-11maxbet-EPcfr0-mRW0_0-iter10000.json");
-  if (strategy == NULL) {
-    fprintf(stderr, "ERROR: could not load JSON file\n");
-    exit(EXIT_FAILURE);
-  }
-
   /* Initialize the player's random number state using time */
   gettimeofday( &tv, NULL );
   init_genrand( &rng, tv.tv_usec );
@@ -123,10 +117,9 @@ int main( int argc, char **argv )
     line[ len ] = ':';
     ++len;
 
-    // Print the match state as viewed by player 0
-    memset(&state, 0, sizeof(state));
-    memcpy(&state.state, state, sizeof(State));
-    state.viewingPlayer = 0;
+
+
+    // Print the match state as viewed by player 0----------------------
     char matchStateStr[MAX_LINE_LEN];
     int matchStateStrLen = printMatchState(game, &state, MAX_LINE_LEN, matchStateStr);
     if (matchStateStrLen < 0) {
@@ -135,7 +128,9 @@ int main( int argc, char **argv )
         printf("Match state as viewed by player 0: %s\n", matchStateStr);
     }
 
-    // Call Python script with matchStateStr as input
+
+
+    // Call Python script with matchStateStr as input---------------------
     char command[MAX_LINE_LEN];
     snprintf(command, MAX_LINE_LEN, "python matchstate_to_action.py \"%s\"", matchStateStr);
     FILE* pipe = popen(command, "r");
@@ -155,7 +150,9 @@ int main( int argc, char **argv )
     pclose(pipe);
     printf("Python script output: %s\n", output);
 
-    /* do the action! */
+
+
+    /* do the action! ---------------------------------------------------- */
     assert( isValidAction( game, &state.state, 0, &action ) );
     r = printAction( game, &action, MAX_LINE_LEN - len - 2,
 		     &line[ len ] );
@@ -175,10 +172,7 @@ int main( int argc, char **argv )
       fprintf( stderr, "ERROR: could not get send response to server\n" );
       exit( EXIT_FAILURE );
     }
-    free(infoset); // Free the memory after using infoset
     fflush( toServer );
   }
-
-  json_object_put(strategy);
   return EXIT_SUCCESS;
 }
