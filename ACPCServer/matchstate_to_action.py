@@ -20,8 +20,7 @@ def transform_matchstate(matchstate):
     if len(parts) < 5:
         return "Invalid matchstate format"
     
-    cards = parts[4].split("|")[1]
-    cards = re.sub(r'[shdc]', '', cards)
+    cards = ''.join(re.findall(r'[A-Z]', parts[4]))
 
     # Extrai o histórico de ações
     action_history = parts[3]
