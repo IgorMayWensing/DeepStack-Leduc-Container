@@ -1,47 +1,52 @@
 import re
+import math
 
 def transform_matchstate(matchstate):
-    # Split the matchstate into its constituent parts
+    # Divide o matchstate em suas partes
     parts = matchstate.split(":")
     
-    # Check if the matchstate has the required format
+    # Checa se o matchstate tem o formato requerido
     if len(parts) < 5:
         return "Invalid matchstate format"
     
-    # Extract holeCards and remove suits
-    holeCards = ''.join([c for c in parts[4].split("|")[1] if c.isalpha() and c.isupper()])
-    
-    split_parts = parts[4].split("|")
-    
-    # Extract boardCards and remove suits
-    boardCards = ''.join([c for c in split_parts[2] if c.isalpha() and c.isupper()]) if len(split_parts) > 2 else ""
-    
-    # Extract action history
+    cards = parts[4].split("|")[1]
+    cards = re.sub(r'[shdc]', '', cards)
+
+    # Extrai o histórico de ações
     action_history = parts[3]
     
-    # Split the action history based on "/" to get actions of each round
+    # Divide o histórico de ações com base em "/" para obter ações de cada rodada
     action_rounds = action_history.split("/")
     
-    # Helper function to transform raise values and replace 'c' or 'f'
+    # Função auxiliar para transformar valores de aumento e substituir 'c' ou 'f'
     def transform_action(action):
-        # Replace "f" with "p"
-        action = action.replace("f", "p")
         
-        # Use regex to find raise patterns and transform them
+        # Usa regex para encontrar padrões de raise e transformá-los
         def replace_raise(match):
             value = int(match.group(1))
-            rounded_value = (value + 99) // 100
-            hex_value = hex(rounded_value)[2:]
-            return hex_value
+            rounded_value = math.ceil(value / 100) * 100
+            return 'r' + str(rounded_value)
 
+        # Substitui 'c' que vem antes de um 'r' por 'k'
+        action = re.sub(r'c(?=r)', 'k', action)
+
+        # Substitui 'cc' por 'kk'
+        action = re.sub(r'cc', 'kk', action)
+
+        # Substitui 'c' por 'k' se for o único caractere na string
+        if action == 'c':
+            action = 'k'
+        
         return re.sub(r'r(\d+)', replace_raise, action)
     
-    # Transform each round of action
+    # Transforma cada rodada de ação
     transformed_actions = [transform_action(a) for a in action_rounds]
     
-    # Construct the final result
-    result = holeCards + boardCards + "".join(transformed_actions)
+    # Constrói o resultado final
+    result = "/".join(transformed_actions) + ":|" + cards
     
+    print()
+    print(matchstate)
     return result
 
 # Test
@@ -91,3 +96,4 @@ test_cases = [
 
 for test in test_cases:
     print(transform_matchstate(test))
+
