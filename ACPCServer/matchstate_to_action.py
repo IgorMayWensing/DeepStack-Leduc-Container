@@ -1,13 +1,16 @@
 import sys
 
 def parse_match_state(match_state_str):
-    print("olha o estado ai pai: " + str(match_state_str))
-    return match_state_str
+    print("print do python> estado antigo: " + str(match_state_str) + "\n")
+
+    string_variable = "joguinho"
+    print("print do python> estado novo definido para: " + string_variable + "\n")
+    return string_variable
 
 def decide_next_action(match_state):
-    # TODO: Implement this function to decide on the next action
+    print("print do python> analise o infostate no nosso jeito\n" )
     # For now, just return a placeholder action
-    return "funcionaaaaaaaaaa"
+    return "action"
 
 def main():
     # Get the match state from the command-line arguments
