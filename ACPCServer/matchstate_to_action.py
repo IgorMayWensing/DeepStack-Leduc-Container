@@ -2,7 +2,7 @@ import sys
 import math
 
 def round_up_to_nearest_hundred(n):
-    return int(math.ceil(n / 100.0))
+    return int(math.ceil(n / 100.0)) * 100
 
 def extract_info(matchstate):
     # Separando as partes da string MATCHSTATE
@@ -32,7 +32,10 @@ def extract_info(matchstate):
             while end < len(action_history) and action_history[end].isdigit():
                 end += 1
             raise_value = int(action_history[start:end])
-            rounded_value_str = str(round_up_to_nearest_hundred(raise_value))
+            rounded_value = round_up_to_nearest_hundred(raise_value)
+            
+            # Formatando o valor para excluir casas de dezena e unidade
+            rounded_value_str = str(rounded_value)[:-2]
             
             action_history = action_history[:index] + rounded_value_str + action_history[end:]
 
