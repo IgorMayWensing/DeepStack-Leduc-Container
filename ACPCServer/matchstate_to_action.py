@@ -2,58 +2,41 @@
 import sys
 import math
 
-def round_up_to_nearest_hundred(n):
-    return int(math.ceil(n / 100.0)) * 100
-
 def extract_info(matchstate):
-    # Separando as partes da string MATCHSTATE
+    # Extract player's cards
     parts = matchstate.split(':')
     
-    # Retirando o naipe e pegando a carta do jogador 0
-    player_0_cards = parts[3].split('|')[0][0]
-    
-    # Tentando extrair a carta da mesa (se existir)
-    board_cards = parts[3].split('|')[1].split('/')[0][0] if '|' in parts[3] and '/' in parts[3] else ''
-    
-    # O histórico de ações, se existir, está na terceira parte da string
-    action_history = parts[2] if len(parts) > 2 else ''
-    
-    # Fazendo as substituições solicitadas
-    action_history = action_history.replace('f', 'p').replace('c', 'p')
-    
-    # Removendo a letra associada ao "raise" mas mantendo o valor numérico
-    while 'r' in action_history:
-        index = action_history.index('r')
-        if index == len(action_history) - 1 or not action_history[index+1].isdigit():
-            action_history = action_history.replace('r', '', 1)
-        else:
-            start = index + 1
-            end = start
-            while end < len(action_history) and action_history[end].isdigit():
-                end += 1
-            raise_value = int(action_history[start:end])
-            rounded_value = round_up_to_nearest_hundred(raise_value)
-            
-            # Formatando o valor para excluir casas de dezena e unidade
-            rounded_value_str = str(rounded_value)[:-2]
-            
-            action_history = action_history[:index] + rounded_value_str + action_history[end:]
+    if len(parts) < 4 or not parts[3]:
+        return "Invalid matchstate"
 
-    # Se a quantidade de ações do preflop for ímpar, adicionar a letra "p" no fim do preflop
-    preflop_actions = action_history.split('/')[0] if '/' in action_history else action_history
-    if len(preflop_actions) % 2 == 1:
-        preflop_actions += "p"
+    player_0_cards_parts = parts[3].split('|')
+    player_0_cards = player_0_cards_parts[0][0] if player_0_cards_parts and player_0_cards_parts[0] else ""
+    
+    # Extract the board cards if available
+    board_cards = player_0_cards_parts[1].split('/')[0] if len(player_0_cards_parts) > 1 else ""
 
-    postflop_actions = action_history[len(preflop_actions):] if '/' in action_history else ""
+    # Extract actions and format them
+    actions = parts[3].split('/')[0].split('|')[1] if '/' in parts[3] and '|' in parts[3] else ""
+    actions = actions.replace('f', 'p').replace('c', 'p')
 
-    return f"{player_0_cards}{board_cards}{preflop_actions}{postflop_actions}"
+    # Adjust the raises
+    new_actions = []
+    for action in actions.split('r'):
+        if action:
+            if action.isdigit():
+                rounded_value = math.ceil(int(action)/100.0) * 100  # Round up to nearest hundred
+                new_actions.append('r' + str(rounded_value // 100))
+            else:
+                new_actions.append(action)
+    formatted_actions = ''.join(new_actions)
+
+    # Add "p" to preflop actions if odd
+    if formatted_actions.count('p') % 2 == 1:
+        formatted_actions += 'p'
+
+    return player_0_cards + board_cards + formatted_actions
 
 if __name__ == "__main__":
-    # Recebendo a entrada
     input_string = sys.argv[1]
-    
-    # Extraindo as informações desejadas
     result = extract_info(input_string)
-    
-    # Imprimindo o resultado
     print(result)
