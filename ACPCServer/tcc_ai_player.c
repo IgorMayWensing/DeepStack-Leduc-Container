@@ -150,7 +150,24 @@ int main( int argc, char **argv )
     pclose(pipe);
     printf("Python script output: %s\n", output);
 
-
+    //define the .type and .size of the action here
+    if (output[0] == 'r') { 
+      action.type = a_raise;
+      // Parse the number following the "r"
+      if (sscanf(output, "r%d", &action.size) != 1) {
+          fprintf(stderr, "ERROR: could not parse raise amount from output\n");
+          exit(EXIT_FAILURE);
+      }
+    } else if (output[0] == 'c') { 
+      action.type = a_call;
+      action.size = 0; // should be zero here
+    } else if (output[0] == 'f') { 
+      action.type = a_fold;
+      action.size = 0; // should be zero here
+    } else {
+      fprintf(stderr, "ERROR: invalid output from Python script\n");
+      exit(EXIT_FAILURE);
+    }
 
     /* do the action! ---------------------------------------------------- */
     assert( isValidAction( game, &state.state, 0, &action ) );

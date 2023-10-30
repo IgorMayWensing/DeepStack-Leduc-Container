@@ -1,5 +1,6 @@
 import re
 import math
+import sys
 
 def transform_matchstate(matchstate):
     # Divide o matchstate em suas partes
@@ -44,56 +45,72 @@ def transform_matchstate(matchstate):
     
     # Constrói o resultado final
     result = "/".join(transformed_actions) + ":|" + cards
-    
-    print()
-    print(matchstate)
     return result
 
-# Test
-test_cases = [
-    "MATCHSTATE:1:0::|Ks",
-    "MATCHSTATE:1:0:c:|Ks",
-    "MATCHSTATE:1:0:cc/:|Ks/Qh",
-    "MATCHSTATE:1:0:cc/c:|Ks/Qh",
-    "MATCHSTATE:1:0:cc/cc:Kh|Ks/Qh",
-    "MATCHSTATE:1:1::|Qs",
-    "MATCHSTATE:1:1:r451:|Qs",
-    "MATCHSTATE:1:1:r451c/:|Qs/Kh",
-    "MATCHSTATE:1:1:r451c/c:|Qs/Kh",
-    "MATCHSTATE:1:1:r451c/cc:Ah|Qs/Kh",
-    "MATCHSTATE:1:2::|Kh",
-    "MATCHSTATE:1:2:c:|Kh",
-    "MATCHSTATE:1:2:cr369:|Kh",
-    "MATCHSTATE:1:2:cr369r1200:|Kh",
-    "MATCHSTATE:1:2:cr369r1200c/:As|Kh/Qs",
-    "MATCHSTATE:1:3::|Qs",
-    "MATCHSTATE:1:3:c:|Qs",
-    "MATCHSTATE:1:3:cc/:|Qs/Kh",
-    "MATCHSTATE:1:3:cc/c:|Qs/Kh",
-    "MATCHSTATE:1:3:cc/cc:Qh|Qs/Kh",
-    "MATCHSTATE:1:4::|Qs",
-    "MATCHSTATE:1:4:c:|Qs",
-    "MATCHSTATE:1:4:cr932:|Qs",
-    "MATCHSTATE:1:4:cr932f:|Qs",
-    "MATCHSTATE:1:5::|Ah",
-    "MATCHSTATE:1:5:r578:|Ah",
-    "MATCHSTATE:1:5:r578r1200:|Ah",
-    "MATCHSTATE:1:5:r578r1200c/:Qh|Ah/Kh",
-    "MATCHSTATE:1:6::|Kh",
-    "MATCHSTATE:1:6:r1200:|Kh",
-    "MATCHSTATE:1:6:r1200f:|Kh",
-    "MATCHSTATE:1:7::|Kh",
-    "MATCHSTATE:1:7:r235:|Kh",
-    "MATCHSTATE:1:7:r235c/:|Kh/Qh",
-    "MATCHSTATE:1:7:r235c/c:|Kh/Qh",
-    "MATCHSTATE:1:7:r235c/cc:Qs|Kh/Qh",
-    "MATCHSTATE:1:8::|Kh",
-    "MATCHSTATE:1:8:c:|Kh",
-    "MATCHSTATE:1:8:cr552:|Kh",
-    "MATCHSTATE:1:8:cr552f:|Kh",
-    "MATCHSTATE:1:9::|Ks"
-]
+def test_infoset_str():
+    # Test
+    test_cases = [
+        "MATCHSTATE:1:0::|Ks",
+        "MATCHSTATE:1:0:c:|Ks",
+        "MATCHSTATE:1:0:cc/:|Ks/Qh",
+        "MATCHSTATE:1:0:cc/c:|Ks/Qh",
+        "MATCHSTATE:1:0:cc/cc:Kh|Ks/Qh",
+        "MATCHSTATE:1:1::|Qs",
+        "MATCHSTATE:1:1:r451:|Qs",
+        "MATCHSTATE:1:1:r451c/:|Qs/Kh",
+        "MATCHSTATE:1:1:r451c/c:|Qs/Kh",
+        "MATCHSTATE:1:1:r451c/cc:Ah|Qs/Kh",
+        "MATCHSTATE:1:2::|Kh",
+        "MATCHSTATE:1:2:c:|Kh",
+        "MATCHSTATE:1:2:cr369:|Kh",
+        "MATCHSTATE:1:2:cr369r1200:|Kh",
+        "MATCHSTATE:1:2:cr369r1200c/:As|Kh/Qs",
+        "MATCHSTATE:1:3::|Qs",
+        "MATCHSTATE:1:3:c:|Qs",
+        "MATCHSTATE:1:3:cc/:|Qs/Kh",
+        "MATCHSTATE:1:3:cc/c:|Qs/Kh",
+        "MATCHSTATE:1:3:cc/cc:Qh|Qs/Kh",
+        "MATCHSTATE:1:4::|Qs",
+        "MATCHSTATE:1:4:c:|Qs",
+        "MATCHSTATE:1:4:cr932:|Qs",
+        "MATCHSTATE:1:4:cr932f:|Qs",
+        "MATCHSTATE:1:5::|Ah",
+        "MATCHSTATE:1:5:r578:|Ah",
+        "MATCHSTATE:1:5:r578r1200:|Ah",
+        "MATCHSTATE:1:5:r578r1200c/:Qh|Ah/Kh",
+        "MATCHSTATE:1:6::|Kh",
+        "MATCHSTATE:1:6:r1200:|Kh",
+        "MATCHSTATE:1:6:r1200f:|Kh",
+        "MATCHSTATE:1:7::|Kh",
+        "MATCHSTATE:1:7:r235:|Kh",
+        "MATCHSTATE:1:7:r235c/:|Kh/Qh",
+        "MATCHSTATE:1:7:r235c/c:|Kh/Qh",
+        "MATCHSTATE:1:7:r235c/cc:Qs|Kh/Qh",
+        "MATCHSTATE:1:8::|Kh",
+        "MATCHSTATE:1:8:c:|Kh",
+        "MATCHSTATE:1:8:cr552:|Kh",
+        "MATCHSTATE:1:8:cr552f:|Kh",
+        "MATCHSTATE:1:9::|Ks"
+    ]
+    for test in test_cases:
+        print(transform_matchstate(test))
 
-for test in test_cases:
-    print(transform_matchstate(test))
+def decide_next_action(match_state):
+    action = "c"
+    return action
 
+def main():
+    # Get the match state from the command-line arguments
+    match_state_str = sys.argv[1]
+
+    # Parse the match state
+    match_state = transform_matchstate(match_state_str)
+
+    # Decide on the next action
+    action = decide_next_action(match_state)
+
+    # Print the action to stdout
+    print(action)
+
+if __name__ == "__main__":
+    main()
