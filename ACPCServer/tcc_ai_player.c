@@ -39,7 +39,6 @@ char* infostate_translator(const Game *game, const State *state) {
       printf("Card doesnt exist\n");
     }
 
-
     char* boardcard = "";
     if (rankOfCard(state->boardCards[0]) == 10) {
       boardcard = "Q";
@@ -52,10 +51,36 @@ char* infostate_translator(const Game *game, const State *state) {
     }
 
     //do this somehow
-    char* actionhistory = "";
+    // char* actionhistory = "";
     // for () {
     //   state->action[ state->round ][ i ];
     // }    
+
+
+    // Initial allocation for actionhistory. We assume 1000 bytes for the sake of this example.
+    // In a real-world situation, consider a more robust string handling mechanism.
+    char* actionhistory = malloc(1000);
+    if (!actionhistory) {
+        // Handle memory allocation error, e.g., exit or return
+        exit(1);
+    }
+    strcpy(actionhistory, "");  // Initialize the string
+
+    for (int i = 0; i < state->numActions[state->round]; i++) {
+        Action currentAction = state->action[state->round][i];
+        
+        // Convert currentAction to a string representation and append it to actionhistory.
+        // Here, for simplicity, I'll assume Action has a member "type" that's an integer.
+        char actionStr[50];  // Temporary string for action representation
+        sprintf(actionStr, "%d,", currentAction.type);  // Convert action type to string
+        strcat(actionhistory, actionStr);  // Append to actionhistory
+    }
+
+    // Optionally, remove trailing comma if desired
+    int len = strlen(actionhistory);
+    if (len > 0 && actionhistory[len - 1] == ',') {
+        actionhistory[len - 1] = '\0';
+    }
 
     // Allocate memory for the infoset string. The size is the sum of the lengths of the other strings + 1 for the null terminator.
     char* infoset = malloc(strlen(mycard) + strlen(boardcard) + strlen(actionhistory) + 1);
@@ -72,6 +97,7 @@ char* infostate_translator(const Game *game, const State *state) {
     printf("actionhistory: %s\n", actionhistory);
     printf("InfoSet: %s\n", infoset);
 
+    free(actionhistory);
     return infoset; // Now infoset should be "AKpp"
 }
 
