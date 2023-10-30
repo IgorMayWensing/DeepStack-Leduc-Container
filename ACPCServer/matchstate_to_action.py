@@ -121,6 +121,7 @@ def action_from_code(action_code, selected_action_index, last_action):
 
 #r600:|A
 #r600c/:|A/A
+#r796:|Ah
 
 def decide_next_action(infoset):
     # Consult our strategy table
@@ -146,7 +147,7 @@ def main():
     infoset = transform_matchstate(match_state_str)
 
     # Decide on the next action
-    action = decide_next_action("r600:|A")
+    action = decide_next_action(infoset)
 
     # Print the action to stdout
     print(action)
