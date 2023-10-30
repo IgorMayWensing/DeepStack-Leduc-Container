@@ -132,7 +132,7 @@ int main( int argc, char **argv )
 
     // Call Python script with matchStateStr as input---------------------
     char command[MAX_LINE_LEN];
-    snprintf(command, MAX_LINE_LEN, "python matchstate_to_action.py \"%s\"", matchStateStr);
+    snprintf(command, MAX_LINE_LEN, "python3 matchstate_to_action.py \"%s\"", matchStateStr);
     FILE* pipe = popen(command, "r");
     if (pipe == NULL) {
       fprintf(stderr, "ERROR: could not execute Python script\n");
