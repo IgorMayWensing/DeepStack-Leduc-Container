@@ -66,14 +66,24 @@ char* infostate_translator(const Game *game, const State *state) {
     }
     strcpy(actionhistory, "");  // Initialize the string
 
+    
+
     for (int i = 0; i < state->numActions[state->round]; i++) {
-        Action currentAction = state->action[state->round][i];
-        
-        // Convert currentAction to a string representation and append it to actionhistory.
-        // Here, for simplicity, I'll assume Action has a member "type" that's an integer.
-        char actionStr[50];  // Temporary string for action representation
-        sprintf(actionStr, "%d,", currentAction.type);  // Convert action type to string
-        strcat(actionhistory, actionStr);  // Append to actionhistory
+      Action currentAction = state->action[state->round][i];
+      printf("Action type: %d\n", currentAction.type);
+      // Convert currentAction to a string representation and append it to actionhistory.
+      // Here, for simplicity, I'll assume Action has a member "type" that's an integer.
+      char actionStr[50];  // Temporary string for action representation
+      sprintf(actionStr, "%d", currentAction.type);  // Convert action type to string
+      if (currentAction.size > 0) {
+        printf("Action size: %d\n", currentAction.size);
+        char sizeStr[50];
+        sprintf(sizeStr, "/%d,", currentAction.size);
+        strcat(actionStr, sizeStr);
+      } else {
+        strcat(actionStr, ",");
+      }
+      strcat(actionhistory, actionStr);  // Append to actionhistory
     }
 
     // Optionally, remove trailing comma if desired
@@ -96,6 +106,28 @@ char* infostate_translator(const Game *game, const State *state) {
     printf("boardcard: %s\n", boardcard);
     printf("actionhistory: %s\n", actionhistory);
     printf("InfoSet: %s\n", infoset);
+
+    // Print the state as viewed by player 0
+    char stateStr[MAX_LINE_LEN];
+    int stateStrLen = printState(game, state, MAX_LINE_LEN, stateStr);
+    if (stateStrLen < 0) {
+        printf("Error printing state\n");
+    } else {
+        printf("State as viewed by player 0: %s\n", stateStr);
+    }
+
+    // Print the match state as viewed by player 0
+    MatchState matchState;
+    memset(&matchState, 0, sizeof(matchState));
+    memcpy(&matchState.state, state, sizeof(State));
+    matchState.viewingPlayer = 0;
+    char matchStateStr[MAX_LINE_LEN];
+    int matchStateStrLen = printMatchState(game, &matchState, MAX_LINE_LEN, matchStateStr);
+    if (matchStateStrLen < 0) {
+        printf("Error printing match state\n");
+    } else {
+        printf("Match state as viewed by player 0: %s\n", matchStateStr);
+    }
 
     free(actionhistory);
     return infoset; // Now infoset should be "AKpp"
