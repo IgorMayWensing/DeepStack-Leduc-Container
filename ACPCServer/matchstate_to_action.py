@@ -11,7 +11,7 @@ directory_path = os.path.dirname(current_file_path)
 
 def load_strategy_table():
     # Load the strategy table from the provided pickle file
-    with open(f'{directory_path}/../blueprints/PaH-mccfr-6cards-11maxbet-EPcfr0_01-mRW0_0001-iter100000.pkl', 'rb') as file:
+    with open(f'{directory_path}/../blueprints/uqa-mccfr-6cards-11maxbet-EPcfr0_0-mRW0_0001-iter2000.pkl', 'rb') as file:
         strategy_table = pickle.load(file)
     return strategy_table
 
@@ -63,7 +63,7 @@ def transform_matchstate(matchstate):
     first_round = action_history.split("/", 1)[0]
     num_letters = sum(1 for char in first_round if char.isalpha())
     if num_letters % 2 == 1:
-        action_history = action_history.replace("/", "k/", 1)
+        action_history = action_history.replace("/", "-/", 1)
 
     result = action_history + ":|" + cards
     return result
