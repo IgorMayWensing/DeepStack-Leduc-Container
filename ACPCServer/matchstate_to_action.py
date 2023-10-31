@@ -156,12 +156,12 @@ def decide_next_action(infoset):
 
 def main():
     # Get the match state from the command-line arguments
-    #match_state_str = sys.argv[1]
-    match_state_str = "MATCHSTATE:0:13:cr1174c/cr1200:Ah|/Kh"
+    match_state_str = sys.argv[1]
+    #match_state_str = "MATCHSTATE:0:13:cr1174c/cr1200:Ah|/Kh"
 
     # Parse the match state
     infoset = transform_matchstate(match_state_str)
-    print(infoset)
+    #print(infoset)
 
     # Decide on the next action
     action = decide_next_action(infoset)
