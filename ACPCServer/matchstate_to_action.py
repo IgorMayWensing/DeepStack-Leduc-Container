@@ -127,7 +127,7 @@ def action_from_code(action_code, selected_action_index, last_action):
     if selected_action_index in dict:
         action = dict[selected_action_index]
     else:
-        action = "r" + action_code + "00"
+        action = "r" + str(action_code) + "00"
     return action
 
 #r600:|A
