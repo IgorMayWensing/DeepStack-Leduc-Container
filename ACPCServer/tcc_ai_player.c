@@ -136,7 +136,7 @@ int main( int argc, char **argv )
     if (matchStateStrLen < 0) {
         printf("Error printing match state\n");
     } else {
-        printf("Match state as viewed by player 0: %s\n", matchStateStr);
+        //printf("Match state as viewed by tcc_ai: %s\n", matchStateStr);
     }
 
 
@@ -159,7 +159,7 @@ int main( int argc, char **argv )
 
     // Close pipe and print output
     pclose(pipe);
-    printf("Python script output: %s\n", output);
+    printf("Choosen action: %s\n", output);
     //remove all possible whitespaces similars from output here.
     remove_whitespace(output);
     //define the .type and .size of the action here
@@ -181,8 +181,8 @@ int main( int argc, char **argv )
       exit(EXIT_FAILURE);
     }
 
-    printf("Action type: %d\n", action.type);
-    printf("Action size: %d\n", action.size);
+    //printf("Action type: %d\n", action.type);
+    //printf("Action size: %d\n", action.size);
 
 
     /* do the action! ---------------------------------------------------- */
