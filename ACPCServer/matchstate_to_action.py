@@ -141,7 +141,8 @@ def decide_next_action(infoset):
     action_data = STRATEGY_TABLE.get(infoset)
     
     # If we don't have data for this match_state, default to 'c'
-    assert action_data is not None    
+    if action_data is not None:
+        return 'c'
     
     actions, probabilities = action_data
     selected_action_code = random.choices(actions, weights=probabilities)[0]
@@ -155,12 +156,12 @@ def decide_next_action(infoset):
 
 def main():
     # Get the match state from the command-line arguments
-    match_state_str = sys.argv[1]
-    #match_state_str = "MATCHSTATE:1:0:cc/c:|Ks/Qh"
+    #match_state_str = sys.argv[1]
+    match_state_str = "MATCHSTATE:0:13:cr1174c/cr1200:Ah|/Kh"
 
     # Parse the match state
     infoset = transform_matchstate(match_state_str)
-    #print(infoset)
+    print(infoset)
 
     # Decide on the next action
     action = decide_next_action(infoset)
