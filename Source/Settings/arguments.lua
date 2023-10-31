@@ -15,7 +15,7 @@ params.bet_sizing = {1}
 --- server running the ACPC dealer
 params.acpc_server = "localhost"
 --- server port running the ACPC dealer
-params.acpc_server_port = 20000
+params.acpc_server_port = 20001
 --- the number of betting rounds in the game
 params.streets_count = 2
 --- the tensor datatype used for storing DeepStack's internal data
