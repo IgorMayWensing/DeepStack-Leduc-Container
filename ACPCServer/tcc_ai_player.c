@@ -181,6 +181,10 @@ int main( int argc, char **argv )
       exit(EXIT_FAILURE);
     }
 
+    printf("Action type: %d\n", action.type);
+    printf("Action size: %d\n", action.size);
+
+
     /* do the action! ---------------------------------------------------- */
     assert( isValidAction( game, &state.state, 0, &action ) );
     r = printAction( game, &action, MAX_LINE_LEN - len - 2,
