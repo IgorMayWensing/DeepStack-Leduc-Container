@@ -134,6 +134,7 @@ def action_from_code(action_code, selected_action_index, last_action):
 #r600c/:|A/A
 #r796:|Ah
 #cr900c/r1000:|Ks/Qh
+#MATCHSTATE:0:1::Ah|
 
 def decide_next_action(infoset):
     # Consult our strategy table
@@ -155,7 +156,7 @@ def decide_next_action(infoset):
 def main():
     # Get the match state from the command-line arguments
     match_state_str = sys.argv[1]
-    #match_state_str = "MATCHSTATE:0:1::Ah|"
+    #match_state_str = "MATCHSTATE:1:0:cc/c:|Ks/Qh"
 
     # Parse the match state
     infoset = transform_matchstate(match_state_str)

@@ -132,7 +132,7 @@ int main( int argc, char **argv )
 
     // Call Python script with matchStateStr as input---------------------
     char command[MAX_LINE_LEN];
-    snprintf(command, MAX_LINE_LEN, "python3 matchstate_to_action.py \"%s\"", matchStateStr);
+    snprintf(command, MAX_LINE_LEN, "python3 matchstate_to_action.py | awk '{$1=$1;print}'"\"%s\"", matchStateStr);
     FILE* pipe = popen(command, "r");
     if (pipe == NULL) {
       fprintf(stderr, "ERROR: could not execute Python script\n");
@@ -140,7 +140,7 @@ int main( int argc, char **argv )
     }
 
     // Read output from Python script
-    char output[MAX_LINE_LEN];
+    char output[MAX_LINE_LEN] = {0};
     if (fgets(output, MAX_LINE_LEN, pipe) == NULL) {
       fprintf(stderr, "ERROR: could not read output from Python script\n");
       exit(EXIT_FAILURE);
