@@ -872,16 +872,14 @@ int isValidAction( const Game *game, const State *curState,
         if( !tryFixing ) {
           return 0;
         }
-        //fprintf( stderr, "WARNING: raise of %d increased to %d\n",
-                 action->size, min );
+        //fprintf( stderr, "WARNING: raise of %d increased to %d\n", action->size, min );
         action->size = min;
       } else if( action->size > max ) {
         //fprintf(stderr, "Return Point 4: Bet size is too big.\n");
         if( !tryFixing ) {
           return 0;
         }
-        //fprintf( stderr, "WARNING: raise of %d decreased to %d\n",
-                 action->size, max );
+        //fprintf( stderr, "WARNING: raise of %d decreased to %d\n", action->size, max );
         action->size = max;
       }
     }
