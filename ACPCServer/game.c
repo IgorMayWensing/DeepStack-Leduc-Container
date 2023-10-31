@@ -849,38 +849,38 @@ int isValidAction( const Game *game, const State *curState,
   int min, max, p;
 
   if( stateFinished( curState ) || action->type == a_invalid ) {
-    fprintf(stderr, "Return Point 1: State finished or action type is invalid.\n");
+    //fprintf(stderr, "Return Point 1: State finished or action type is invalid.\n");
     return 0;
   }
 
   p = currentPlayer( game, curState );
-  fprintf(stderr, "Current Player (p): %d\n", p);  // Printing p value
+  //fprintf(stderr, "Current Player (p): %d\n", p);  // Printing p value
 
   if( action->type == a_raise ) {
 
     if( !raiseIsValid( game, curState, &min, &max ) ) {
-      fprintf(stderr, "Return Point 2: No valid raise sizes.\n");
+      //fprintf(stderr, "Return Point 2: No valid raise sizes.\n");
       return 0;
     }
 
-    fprintf(stderr, "Valid Raise Range: min = %d, max = %d\n", min, max);  // Printing min and max values
+    //fprintf(stderr, "Valid Raise Range: min = %d, max = %d\n", min, max);  // Printing min and max values
 
     if( game->bettingType == noLimitBetting ) {
       
       if( action->size < min ) {
-        fprintf(stderr, "Return Point 3: Bet size is too small.\n");
+        //fprintf(stderr, "Return Point 3: Bet size is too small.\n");
         if( !tryFixing ) {
           return 0;
         }
-        fprintf( stderr, "WARNING: raise of %d increased to %d\n",
+        //fprintf( stderr, "WARNING: raise of %d increased to %d\n",
                  action->size, min );
         action->size = min;
       } else if( action->size > max ) {
-        fprintf(stderr, "Return Point 4: Bet size is too big.\n");
+        //fprintf(stderr, "Return Point 4: Bet size is too big.\n");
         if( !tryFixing ) {
           return 0;
         }
-        fprintf( stderr, "WARNING: raise of %d decreased to %d\n",
+        //fprintf( stderr, "WARNING: raise of %d decreased to %d\n",
                  action->size, max );
         action->size = max;
       }
@@ -891,24 +891,24 @@ int isValidAction( const Game *game, const State *curState,
 
     if( curState->spent[ p ] == curState->maxSpent
         || curState->spent[ p ] == game->stack[ p ] ) {
-      fprintf(stderr, "Return Point 5: Player has already called all bets, or is all-in.\n");
+      //fprintf(stderr, "Return Point 5: Player has already called all bets, or is all-in.\n");
       return 0;
     }
 
     if( action->size != 0 ) {
-      fprintf(stderr, "Return Point 6: Size given for fold.\n");
-      fprintf( stderr, "WARNING: size given for fold\n" );
+      //fprintf(stderr, "Return Point 6: Size given for fold.\n");
+      //fprintf( stderr, "WARNING: size given for fold\n" );
       action->size = 0;
     }
   } else {
     if( action->size != 0 ) {
-      fprintf(stderr, "Return Point 7: Size given for something other than a no-limit raise.\n");
-      fprintf( stderr, "WARNING: size given for something other than a no-limit raise\n" );
+      //fprintf(stderr, "Return Point 7: Size given for something other than a no-limit raise.\n");
+      //fprintf( stderr, "WARNING: size given for something other than a no-limit raise\n" );
       action->size = 0;
     }
   }
 
-  fprintf(stderr, "Return Point 8: Action is considered valid.\n");
+  //fprintf(stderr, "Return Point 8: Action is considered valid.\n");
   return 1;
 }
 
