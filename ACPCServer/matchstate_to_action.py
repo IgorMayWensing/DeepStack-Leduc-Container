@@ -3,10 +3,15 @@ import math
 import sys
 import pickle
 import random
+import os
+
+current_file_path = os.path.realpath(__file__)
+directory_path = os.path.dirname(current_file_path)
+
 
 def load_strategy_table():
     # Load the strategy table from the provided pickle file
-    with open('../blueprints/HvX-mccfr-6cards-11maxbet-EPcfr0-mRW0_0-iter1000.pkl', 'rb') as file:
+    with open(f'{directory_path}/../blueprints/PaH-mccfr-6cards-11maxbet-EPcfr0_01-mRW0_0001-iter100000.pkl', 'rb') as file:
         strategy_table = pickle.load(file)
     return strategy_table
 
@@ -20,13 +25,16 @@ def transform_matchstate(matchstate):
     if len(parts) < 5:
         return "Invalid matchstate format"
     
-    cards = ''.join(re.findall(r'[A-Z]', parts[4]))
+    cards = ''.join(re.findall(r'[A-Z/]', parts[4]))
 
     # Extrai o histórico de ações
     action_history = parts[3]
     
     # Divide o histórico de ações com base em "/" para obter ações de cada rodada
     action_rounds = action_history.split("/")
+
+    if len(re.sub(r'\d', '', action_rounds[0])) % 2 == 1:
+            action_rounds[0] = action_rounds[0] + 'k'
     
     # Função auxiliar para transformar valores de aumento e substituir 'c' ou 'f'
     def transform_action(action):
@@ -46,7 +54,7 @@ def transform_matchstate(matchstate):
         # Substitui 'c' por 'k' se for o único caractere na string
         if action == 'c':
             action = 'k'
-        
+
         return re.sub(r'r(\d+)', replace_raise, action)
     
     # Transforma cada rodada de ação
@@ -121,14 +129,14 @@ def action_from_code(action_code, selected_action_index, last_action):
 #r600:|A
 #r600c/:|A/A
 #r796:|Ah
+#cr900c/r1000:|Ks/Qh
 
 def decide_next_action(infoset):
     # Consult our strategy table
     action_data = STRATEGY_TABLE.get(infoset)
     
     # If we don't have data for this match_state, default to 'c'
-    if action_data is None:
-        return 'c', 0
+    assert action_data is not None    
     
     actions, probabilities = action_data
     selected_action_code = random.choices(actions, weights=probabilities)[0]
@@ -140,7 +148,8 @@ def decide_next_action(infoset):
 
 def main():
     # Get the match state from the command-line arguments
-    match_state_str = sys.argv[1]
+    #match_state_str = sys.argv[1]
+    match_state_str = "MATCHSTATE:1:0:cr900c/r1000:|Ks/Qh"
 
     # Parse the match state
     infoset = transform_matchstate(match_state_str)
