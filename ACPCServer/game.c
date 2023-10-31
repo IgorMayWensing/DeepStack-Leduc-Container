@@ -847,6 +847,7 @@ int isValidAction( const Game *game, const State *curState,
                    const int tryFixing, Action *action )
 {
   int min, max, p;
+  printf("min: %d, max: %d, p: %d\n", min, max, p);
 
   if( stateFinished( curState ) || action->type == a_invalid ) {
     fprintf(stderr, "Return Point 1: State finished or action type is invalid.\n");
