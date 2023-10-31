@@ -148,8 +148,8 @@ def decide_next_action(infoset):
 
 def main():
     # Get the match state from the command-line arguments
-    #match_state_str = sys.argv[1]
-    match_state_str = "MATCHSTATE:1:0:cr900c/r1000:|Ks/Qh"
+    match_state_str = sys.argv[1]
+    #match_state_str = "MATCHSTATE:1:0:cr900c/r1000:|Ks/Qh"
 
     # Parse the match state
     infoset = transform_matchstate(match_state_str)
