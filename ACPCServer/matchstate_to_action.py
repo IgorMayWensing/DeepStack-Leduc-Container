@@ -32,9 +32,6 @@ def transform_matchstate(matchstate):
     
     # Divide o histórico de ações com base em "/" para obter ações de cada rodada
     action_rounds = action_history.split("/")
-
-    if len(re.sub(r'\d', '', action_rounds[0])) % 2 == 1:
-            action_rounds[0] = action_rounds[0] + 'k'
     
     # Função auxiliar para transformar valores de aumento e substituir 'c' ou 'f'
     def transform_action(action):
@@ -59,9 +56,16 @@ def transform_matchstate(matchstate):
     
     # Transforma cada rodada de ação
     transformed_actions = [transform_action(a) for a in action_rounds]
-    
     # Constrói o resultado final
-    result = "/".join(transformed_actions) + ":|" + cards
+    action_history = "/".join(transformed_actions)
+    
+    #add the code here
+    first_round = action_history.split("/", 1)[0]
+    num_letters = sum(1 for char in first_round if char.isalpha())
+    if num_letters % 2 == 1:
+        action_history = action_history.replace("/", "k/", 1)
+
+    result = action_history + ":|" + cards
     return result
 
 def test_infoset_str():
