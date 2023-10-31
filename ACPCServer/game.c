@@ -847,7 +847,6 @@ int isValidAction( const Game *game, const State *curState,
                    const int tryFixing, Action *action )
 {
   int min, max, p;
-  printf("min: %d, max: %d, p: %d\n", min, max, p);
 
   if( stateFinished( curState ) || action->type == a_invalid ) {
     fprintf(stderr, "Return Point 1: State finished or action type is invalid.\n");
@@ -855,6 +854,7 @@ int isValidAction( const Game *game, const State *curState,
   }
 
   p = currentPlayer( game, curState );
+  fprintf(stderr, "Current Player (p): %d\n", p);  // Printing p value
 
   if( action->type == a_raise ) {
 
@@ -862,6 +862,8 @@ int isValidAction( const Game *game, const State *curState,
       fprintf(stderr, "Return Point 2: No valid raise sizes.\n");
       return 0;
     }
+
+    fprintf(stderr, "Valid Raise Range: min = %d, max = %d\n", min, max);  // Printing min and max values
 
     if( game->bettingType == noLimitBetting ) {
       
