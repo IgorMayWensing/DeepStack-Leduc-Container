@@ -146,17 +146,20 @@ def decide_next_action(infoset):
     selected_action_code = random.choices(actions, weights=probabilities)[0]
 
     selected_action_index = actions.index(selected_action_code)
-    last_action = infoset.split(":|")[0][-1]
-
+    try:
+        last_action = infoset.split(":|")[0][-1]
+    except IndexError:
+        last_action = 'y'
     return action_from_code(selected_action_code, selected_action_index, last_action)
 
 def main():
     # Get the match state from the command-line arguments
     match_state_str = sys.argv[1]
-    #match_state_str = "MATCHSTATE:1:0:cr900c/r1000:|Ks/Qh"
+    #match_state_str = "MATCHSTATE:0:1::Ah|"
 
     # Parse the match state
     infoset = transform_matchstate(match_state_str)
+    #print(infoset)
 
     # Decide on the next action
     action = decide_next_action(infoset)
