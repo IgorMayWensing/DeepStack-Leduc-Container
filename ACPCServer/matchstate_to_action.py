@@ -141,8 +141,8 @@ def decide_next_action(infoset):
     action_data = STRATEGY_TABLE.get(infoset)
     
     # If we don't have data for this match_state, default to 'c'
-    if action_data is not None:
-        return 'c'
+    if action_data is None:
+        return "c"
     
     actions, probabilities = action_data
     selected_action_code = random.choices(actions, weights=probabilities)[0]
