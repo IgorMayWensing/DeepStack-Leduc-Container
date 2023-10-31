@@ -17,6 +17,17 @@ Copyright (C) 2011 by the Computer Poker Research Group, University of Alberta
 #include "rng.h"
 #include "net.h"
 
+void remove_whitespace(char* str) {
+    int i = 0, j = 0;
+    while (str[i]) {
+        if (!isspace((unsigned char)str[i])) {
+            str[j++] = str[i];
+        }
+        i++;
+    }
+    str[j] = '\0';  // Null-terminate the modified string
+}
+
 int main( int argc, char **argv )
 {
   int sock, len, r;
@@ -132,7 +143,7 @@ int main( int argc, char **argv )
 
     // Call Python script with matchStateStr as input---------------------
     char command[MAX_LINE_LEN];
-    snprintf(command, MAX_LINE_LEN, "python3 matchstate_to_action.py \"%s\" | awk '{$1=$1;print}'", matchStateStr);
+    snprintf(command, MAX_LINE_LEN, "python3 matchstate_to_action.py \"%s\"", matchStateStr);
     FILE* pipe = popen(command, "r");
     if (pipe == NULL) {
       fprintf(stderr, "ERROR: could not execute Python script\n");
@@ -149,7 +160,8 @@ int main( int argc, char **argv )
     // Close pipe and print output
     pclose(pipe);
     printf("Python script output: %s\n", output);
-
+    //remove all possible whitespaces similars from output here.
+    remove_whitespace(output);
     //define the .type and .size of the action here
     if (output[0] == 'r') { 
       action.type = a_raise;
