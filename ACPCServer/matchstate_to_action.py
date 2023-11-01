@@ -11,7 +11,7 @@ directory_path = os.path.dirname(current_file_path)
 
 def load_strategy_table():
     # Load the strategy table from the provided pickle file
-    with open(f'{directory_path}/../blueprints/wkc-mccfr-6cards-11maxbet-EPcfr0_0-mRW0_0001-iter100000.pkl', 'rb') as file:
+    with open(f'{directory_path}/../blueprints/iwP-mccfr-6cards-11maxbet-EPcfr0_0-mRW0_0002-iter4000000.pkl', 'rb') as file:
         strategy_table = pickle.load(file)
     return strategy_table
 
