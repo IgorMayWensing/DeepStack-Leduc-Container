@@ -1,3 +1,63 @@
+# No-limit Leduc Poker Ai
+This fork builds upon the original DeepStack Leduc framework by providing:
+
+* A Dockerfile to containerize the application, ensuring a hassle-free setup and execution.
+* An enhanced tabular strategy for our AI
+
+## Running the Modified Fork with Docker
+Utilizing the included Dockerfile, you can easily set up and run the project in any environment. Follow the step-by-step guide below to leverage Docker for execution:
+
+## Building and Running the Docker Image
+Clone the repository (if you haven't already):
+
+### 1- Clone this reposiory(if you haven't already):
+```
+git clone https://github.com/IgorMayWensing/DeepStack-Leduc-Container.git
+cd DeepStack-Leduc-Container
+```
+### 2- Build the Docker image:
+```
+docker build -t deepstack-leduc .
+```
+### 3- Run the Docker container:
+```
+docker run -it -p 20000:20000 -p 20001:20001 deepstack-leduc
+```
+This will start a container instance with ports 20000 and 20001 exposed.
+
+
+## Running the Application
+Once inside the Docker container, you can run the server and clients as follows:
+
+### Start the server:
+```
+./dealer test leduc.game 1000 1 player1 player2 -p 20000,20001
+```
+
+### Run the Deepstack client (in a new terminal):
+With the default port (20000):
+```
+th Source/Player/deepstack.lua
+```
+Or specify the port:
+```
+th Source/Player/deepstack.lua 20001
+```
+
+### Run the MCCFR AI client (in a new terminal):
+```
+./tcc_ai_player leduc.game localhost [PORT_NUMBER]
+```
+Replace [PORT_NUMBER] with either 20000 or 20001 depending on which port you want to connect to.
+
+### Run the Example player client (in a new terminal):
+```
+./example_player leduc.game localhost [PORT_NUMBER]
+```
+Again, replace [PORT_NUMBER] with either 20000 or 20001.
+
+
+
 # DeepStack for Leduc Hold'em
 
 [DeepStack](https://www.deepstack.ai) is an artificial intelligence agent
