@@ -21,7 +21,7 @@ docker build -t deepstack-leduc .
 ```
 ### 3- Run the Docker container:
 ```
-docker run -it -p 20000:20000 -p 20001:20001 deepstack-leduc
+docker run -it deepstack-leduc
 ```
 This will start a container instance with ports 20000 and 20001 exposed.
 
@@ -31,27 +31,32 @@ Once inside the Docker container, you can run the server and clients as follows:
 
 ### Start the server:
 ```
+cd ACPCServer
 ./dealer test leduc.game 1000 1 player1 player2 -p 20000,20001
 ```
 
 ### Run the Deepstack client (in a new terminal):
 With the default port (20000):
 ```
-th Source/Player/deepstack.lua
+cd Source
+th Player/deepstack.lua
 ```
 Or specify the port:
 ```
-th Source/Player/deepstack.lua 20001
+cd Source
+th Player/deepstack.lua 20001
 ```
 
 ### Run the MCCFR AI client (in a new terminal):
 ```
+cd ACPCServer
 ./tcc_ai_player leduc.game localhost [PORT_NUMBER]
 ```
 Replace [PORT_NUMBER] with either 20000 or 20001 depending on which port you want to connect to.
 
 ### Run the Example player client (in a new terminal):
 ```
+cd ACPCServer
 ./example_player leduc.game localhost [PORT_NUMBER]
 ```
 Again, replace [PORT_NUMBER] with either 20000 or 20001.
